@@ -1,0 +1,18 @@
+﻿version: '3.8'
+
+services:
+  azuresqledge:
+    image: mcr.microsoft.com/azure-sql-edge
+    container_name: azuresqledge
+    environment:
+      SA_PASSWORD: "dbPassword123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  sql_data:
+    driver: local
