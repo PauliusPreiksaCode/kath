@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using organization_back_end.Auth.Model;
 using organization_back_end.RequestDtos.Auth;
+using organization_back_end.Services;
 
 namespace organization_back_end.Auth;
 
@@ -15,13 +16,15 @@ public class AuthEndpoints : ControllerBase
     private readonly JwtService _jwtService;
     private readonly SessionService _sessionService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly LicenceService _licenceService;
 
-    public AuthEndpoints(UserManager<User> userManager, JwtService jwtService, IHttpContextAccessor httpContextAccessor, SessionService sessionService)
+    public AuthEndpoints(UserManager<User> userManager, JwtService jwtService, IHttpContextAccessor httpContextAccessor, SessionService sessionService, LicenceService licenceService)
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _httpContextAccessor = httpContextAccessor;
         _sessionService = sessionService;
+        _licenceService = licenceService;
     }
 
     [HttpPost]
@@ -39,7 +42,7 @@ public class AuthEndpoints : ControllerBase
         }
         
         
-        var user = await _userManager.FindByNameAsync(request.Username);
+        var user = await _userManager.FindByNameAsync(request.Email);
 
         if (user is not null)
             return StatusCode(422, "Username already taken");
@@ -48,7 +51,7 @@ public class AuthEndpoints : ControllerBase
         {
             Name = request.Name,
             Surname = request.Surname,
-            UserName = request.Username,
+            UserName = request.Email,
             Email = request.Email
         };
 
@@ -90,6 +93,8 @@ public class AuthEndpoints : ControllerBase
         if(!isPasswordValid)
             return StatusCode(422, "Password not correct");
 
+        await _licenceService.ValidateLicenceExpiration(user.Id);
+
         var sessionId = Guid.NewGuid();
         var expiresAt = DateTime.UtcNow.AddDays(3);
         var roles = await _userManager.GetRolesAsync(user);
@@ -106,7 +111,7 @@ public class AuthEndpoints : ControllerBase
             Secure = true
         };
         
-        _httpContextAccessor.HttpContext.Response.Cookies.Append("RefreshToken", refreshToken, cookiesOptions);
+        _httpContextAccessor?.HttpContext?.Response.Cookies.Append("RefreshToken", refreshToken, cookiesOptions);
 
         return Ok(accessToken);
     }

@@ -8,7 +8,9 @@ using Microsoft.OpenApi.Models;
 using organization_back_end;
 using organization_back_end.Auth;
 using organization_back_end.Auth.Model;
+using organization_back_end.Services;
 using organization_back_end.Validation.Auth;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,29 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "Organization API",
         Version = "v1"
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter: Bearer <token>"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
     });
 });
 
@@ -59,11 +84,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<JwtService>();
 builder.Services.AddTransient<SessionService>();
+builder.Services.AddTransient<LicenceService>();
+builder.Services.AddTransient<UserService>();
+builder.Services.AddScoped<AuthSeeder>();
+
 
 builder.Services.AddCors(options =>
 {
@@ -101,5 +132,12 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     endpoints.MapRazorPages();
 });
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<SystemContext>();
+    var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
+    await dbSeeder.SeedAsync();
+}
 
 app.Run();

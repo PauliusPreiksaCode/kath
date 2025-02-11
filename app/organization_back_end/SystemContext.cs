@@ -34,6 +34,18 @@ public class SystemContext : IdentityDbContext<User>
     {
         base.OnModelCreating(builder);
 
+        builder.Entity<LicencedUser>()
+            .HasBaseType<User>();
+
+        builder.Entity<OrganizationOwner>()
+            .HasBaseType<LicencedUser>();
+        
+        builder.Entity<User>()
+            .HasDiscriminator<string>("UserType")
+            .HasValue<User>("User")
+            .HasValue<LicencedUser>("LicencedUser")
+            .HasValue<OrganizationOwner>("OrganizationOwner");
+
         builder.Entity<File>()
             .HasOne(f => f.Entry)
             .WithOne(e => e.File)

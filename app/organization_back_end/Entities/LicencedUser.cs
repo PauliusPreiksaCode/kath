@@ -9,5 +9,5 @@ public class LicencedUser : User
 {
     public List<OrganizationUser>? OrganizationUsers { get; set; }
     public List<Entry>? Entries { get; set; }
-    public List<LicenceLedgerEntry> LicenceLedgerEntries { get; set; }
+    public List<LicenceLedgerEntry>? LicenceLedgerEntries { get; set; }
 }

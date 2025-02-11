@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using organization_back_end.Enums;
 
 namespace organization_back_end.Entities;
 
@@ -10,6 +11,7 @@ public class LicenceLedgerEntry
     public Guid Id { get; set; }
     public DateTime PurchaseDate { get; set; }
     public bool IsActive { get; set; }
+    public LicencePaymentStatus PaymentStatus { get; set; }
     
     [Required]
     public required Guid LicenceId { get; set; }

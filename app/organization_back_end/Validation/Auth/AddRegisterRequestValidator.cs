@@ -7,10 +7,6 @@ public class AddRegisterRequestValidator : AbstractValidator<RegisterUserRequest
 {
     public AddRegisterRequestValidator()
     {
-        RuleFor(x => x.Username)
-            .NotEmpty().WithMessage("Username is required")
-            .MinimumLength(4).WithMessage("Username should be at least 4 characters long");
-
         RuleFor(x => x.Email)
             .EmailAddress();
 

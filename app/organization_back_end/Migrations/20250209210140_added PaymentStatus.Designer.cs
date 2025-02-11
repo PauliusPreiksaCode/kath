@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using organization_back_end;
 
@@ -11,9 +12,11 @@ using organization_back_end;
 namespace organization_back_end.Migrations
 {
     [DbContext(typeof(SystemContext))]
-    partial class SystemContextModelSnapshot : ModelSnapshot
+    [Migration("20250209210140_added PaymentStatus")]
+    partial class addedPaymentStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,11 +218,6 @@ namespace organization_back_end.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("UserType")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -232,9 +230,7 @@ namespace organization_back_end.Migrations
 
                     b.ToTable("AspNetUsers", (string)null);
 
-                    b.HasDiscriminator<string>("UserType").HasValue("User");
-
-                    b.UseTphMappingStrategy();
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("organization_back_end.Entities.Entry", b =>
@@ -497,15 +493,15 @@ namespace organization_back_end.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("LicenceLegerEntryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("PaymentNumberStripe")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -546,14 +542,14 @@ namespace organization_back_end.Migrations
                 {
                     b.HasBaseType("organization_back_end.Auth.Model.User");
 
-                    b.HasDiscriminator().HasValue("LicencedUser");
+                    b.ToTable("LicencedUsers", (string)null);
                 });
 
             modelBuilder.Entity("organization_back_end.Entities.OrganizationOwner", b =>
                 {
                     b.HasBaseType("organization_back_end.Entities.LicencedUser");
 
-                    b.HasDiscriminator().HasValue("OrganizationOwner");
+                    b.ToTable("OrganizationOwners", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -738,6 +734,24 @@ namespace organization_back_end.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("organization_back_end.Entities.LicencedUser", b =>
+                {
+                    b.HasOne("organization_back_end.Auth.Model.User", null)
+                        .WithOne()
+                        .HasForeignKey("organization_back_end.Entities.LicencedUser", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("organization_back_end.Entities.OrganizationOwner", b =>
+                {
+                    b.HasOne("organization_back_end.Entities.LicencedUser", null)
+                        .WithOne()
+                        .HasForeignKey("organization_back_end.Entities.OrganizationOwner", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("organization_back_end.Entities.File", b =>

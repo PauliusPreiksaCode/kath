@@ -10,7 +10,7 @@ public class Payment
     public Guid Id { get; set; }
     public DateTime PaymentDate { get; set; }
     public decimal Amount { get; set; }
-    public required string CardNumber { get; set; }
+    public required string PaymentNumberStripe { get; set; }
     
     [Required]
     public Guid LicenceLegerEntryId { get; set; }
