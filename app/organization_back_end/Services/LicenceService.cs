@@ -137,13 +137,27 @@ public class LicenceService
             var user = await _userManager.FindByIdAsync(ledgerEntry.UserId);
             if (ledgerEntry.Licence.Type == LicenceType.Organization)
             {
-                if(!(await _userManager.IsInRoleAsync(user, Roles.OrganizationOwner)))
+                if (!(await _userManager.IsInRoleAsync(user, Roles.OrganizationOwner)))
+                {
                     await _userManager.AddToRoleAsync(user, Roles.OrganizationOwner);
+                    
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE AspNetUsers SET UserType = {0} WHERE Id = {1}", 
+                        "OrganizationOwner", ledgerEntry.UserId
+                    );
+                }
             }
             else
             {
-                if(!(await _userManager.IsInRoleAsync(user, Roles.LicencedUser)))
+                if (!(await _userManager.IsInRoleAsync(user, Roles.LicencedUser)))
+                {
                     await _userManager.AddToRoleAsync(user, Roles.LicencedUser);
+                    
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE AspNetUsers SET UserType = {0} WHERE Id = {1}", 
+                        "LicencedUser", ledgerEntry.UserId
+                    );
+                }
             }
             
         } 
@@ -179,5 +193,14 @@ public class LicenceService
                 await _context.SaveChangesAsync();
             }
         }
+    }
+    
+    public async Task<bool> HasRole(string userId, string role)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+            return false;
+        
+        return await _userManager.IsInRoleAsync(user, role);
     }
 }

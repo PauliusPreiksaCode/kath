@@ -93,6 +93,7 @@ builder.Services.AddTransient<JwtService>();
 builder.Services.AddTransient<SessionService>();
 builder.Services.AddTransient<LicenceService>();
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<OrganizationService>();
 builder.Services.AddScoped<AuthSeeder>();
 
 
