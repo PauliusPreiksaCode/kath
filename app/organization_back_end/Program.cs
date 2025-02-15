@@ -94,6 +94,7 @@ builder.Services.AddTransient<SessionService>();
 builder.Services.AddTransient<LicenceService>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<OrganizationService>();
+builder.Services.AddTransient<GroupService>();
 builder.Services.AddScoped<AuthSeeder>();
 
 

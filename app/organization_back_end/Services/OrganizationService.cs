@@ -10,11 +10,13 @@ public class OrganizationService
 {
     private readonly SystemContext _systemContext;
     private readonly UserManager<User> _userManager;
+    private readonly GroupService _groupService;
 
-    public OrganizationService(SystemContext systemContext, UserManager<User> userManager)
+    public OrganizationService(SystemContext systemContext, UserManager<User> userManager, GroupService groupService)
     {
         _systemContext = systemContext;
         _userManager = userManager;
+        _groupService = groupService;
     }
     
     public async Task<ICollection<Organization>> GetOrganizations(string userId)
@@ -26,6 +28,7 @@ public class OrganizationService
             .ToListAsync();
 
         var organizations = await _systemContext.Organizations
+            .AsNoTracking()
             .Include(o => o.Groups)
             .Where(o => userOrganizationsId.Contains(o.Id))
             .ToListAsync();
@@ -154,6 +157,7 @@ public class OrganizationService
     public async Task DeleteOrganization(Guid organizationId)
     {
         var organization = await _systemContext.Organizations
+            .Include(o => o.Groups)
             .FirstOrDefaultAsync(x => x.Id.Equals(organizationId));
 
         if (organization is not null)
@@ -165,6 +169,13 @@ public class OrganizationService
             foreach (var organizationUser in allOrganizationUsers)
                 await RemoveUserFromOrganization(organizationUser.UserId, organizationId);
             
+            var groups = organization?.Groups?.ToList();
+            
+            if (groups is not null)
+            {
+                foreach (var group in groups)
+                    await _groupService.DeleteGroup(group.Id, organizationId);
+            }
             
             _systemContext.Organizations.Remove(organization);
             await _systemContext.SaveChangesAsync();

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace organization_back_end.Entities;
 
@@ -15,6 +16,7 @@ public class Group
     [Required]
     public Guid OrganizationId { get; set; }
     [ForeignKey("OrganizationId")]
+    [JsonIgnore]
     public Organization Organization { get; set; }
     
     public Guid? NoteBookId { get; set; }
