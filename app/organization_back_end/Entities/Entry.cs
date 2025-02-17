@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace organization_back_end.Entities;
 
@@ -19,10 +20,12 @@ public class Entry
     [Required]
     public Guid GroupId { get; set; }
     [ForeignKey("GroupId")]
+    [JsonIgnore]
     public Group Group { get; set; }
     
     [Required]
     public string LicencedUserId { get; set; }
     [ForeignKey("LicencedUserId")]
+    [JsonIgnore]
     public LicencedUser LicencedUser { get; set; }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.RequestDtos.Group;
 
@@ -7,10 +9,14 @@ namespace organization_back_end.Services;
 public class GroupService
 {
     private readonly SystemContext _systemContext;
+    private readonly EntryService _entryService;
+    private readonly UserManager<User> _userManager;
 
-    public GroupService(SystemContext systemContext)
+    public GroupService(SystemContext systemContext, EntryService entryService, UserManager<User> userManager)
     {
         _systemContext = systemContext;
+        _entryService = entryService;
+        _userManager = userManager;
     }
 
     public async Task CreateGroup(AddGroupRequest request)
@@ -77,10 +83,22 @@ public class GroupService
             throw new Exception("Group not found");
         }
         
+        var entries = await _systemContext.Entries
+            .Where(x => x.GroupId.Equals(request.GroupId))
+            .ToListAsync();
+        
+        foreach (var entry in entries)
+        {
+            await _entryService.DeleteEntry(entry.Id, entry.GroupId, entry.LicencedUserId);
+        }
+        
         var organization = await _systemContext.Organizations
             .FirstOrDefaultAsync(x => x.Id.Equals(request.OrganizationId));
         
-        organization.Groups.Remove(group);
+        organization!.Groups!.Remove(group);
+        group.Organization = null;
+        group.OrganizationId = Guid.Empty;
+        
         _systemContext.Groups.Remove(group);
         await _systemContext.SaveChangesAsync();
     }

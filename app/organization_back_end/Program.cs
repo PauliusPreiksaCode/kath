@@ -11,6 +11,7 @@ using organization_back_end.Auth.Model;
 using organization_back_end.Services;
 using organization_back_end.Validation.Auth;
 using Stripe;
+using FileService = organization_back_end.Services.FileService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,9 +92,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<JwtService>();
 builder.Services.AddTransient<SessionService>();
+builder.Services.AddScoped<BlobService>();
+builder.Services.AddTransient<FileService>();
 builder.Services.AddTransient<LicenceService>();
 builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<OrganizationService>();
+builder.Services.AddTransient<EntryService>();
 builder.Services.AddTransient<GroupService>();
 builder.Services.AddScoped<AuthSeeder>();
 
