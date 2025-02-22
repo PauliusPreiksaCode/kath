@@ -44,6 +44,30 @@ public class EntryController : ControllerBase
         }
     }
     
+    [HttpGet]
+    [Authorize]
+    [Route("download-photo/{groupId:guid}/{entryId:guid}")]
+    public async Task<IActionResult> DownloadFile([FromRoute] Guid groupId, [FromRoute] Guid entryId)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+
+            if(await _licenceService.HasRole(userId, Roles.OrganizationOwner) ||
+               await _licenceService.HasRole(userId, Roles.LicencedUser))
+            {
+                var file = await _entryService.DownloadFile(groupId, entryId);
+                return file;
+            }
+
+            return Forbid();
+        }
+        catch (Exception e)
+        {
+            return NotFound();
+        }
+    }
+    
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> CreateEntry([FromForm] AddEntryRequest request)
@@ -69,7 +93,7 @@ public class EntryController : ControllerBase
     
     [HttpPut]
     [Authorize]
-    public async Task<IActionResult> UpdateEntry([FromBody] UpdateEntryRequest request)
+    public async Task<IActionResult> UpdateEntry([FromForm] UpdateEntryRequest request)
     {
         try
         {
@@ -112,4 +136,35 @@ public class EntryController : ControllerBase
             return StatusCode(400, e.Message);
         }
     }
+    
+    [HttpDelete]
+    [Authorize]
+    [Route("delete-photo/{groupId:guid}/{entryId:guid}")]
+    public async Task<IActionResult> DeleteFile([FromRoute] Guid groupId, [FromRoute] Guid entryId)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+
+            if(await _licenceService.HasRole(userId, Roles.OrganizationOwner) ||
+               await _licenceService.HasRole(userId, Roles.LicencedUser))
+            {
+                await _entryService.DeleteFile(groupId, entryId, userId);
+                return Ok();
+            }
+
+            return Forbid();
+        }
+        catch (Exception e)
+        {
+            return e.Message switch
+            {
+                "Entry not found" => NotFound(),
+                "You are not the creator of this entry" => Forbid(),
+                "File not found" => NotFound(),
+                _ => StatusCode(400, e.Message)
+            };
+        }
+    }
+    
 }

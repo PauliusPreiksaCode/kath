@@ -32,7 +32,7 @@ public class EntryService
         return entries;
     }
 
-    public async Task<FileStreamResult?> DownloadFile(Guid groupId, Guid entryId)
+    public async Task<FileStreamResult> DownloadFile(Guid groupId, Guid entryId)
     {
         var entry = await _systemContext.Entries
             .Include(e => e.File)
@@ -40,10 +40,11 @@ public class EntryService
 
         if (entry is not null)
         {
-            return await _fileService.DownloadFileAsync(entry.File!.Path);
+            string fileName = $"{entry.File!.Id}-{entry.File.Name}{entry.File.Extension}";
+            return await _fileService.DownloadFileAsync(fileName);
         }
 
-        return null;
+        throw new Exception("File not found");
     }
 
     
@@ -123,6 +124,32 @@ public class EntryService
         entry.ModifyDate = DateTime.Now;
 
         await _systemContext.SaveChangesAsync();
+        
+        if(request.File is not null)
+        {
+            var group = await _systemContext.Groups
+                .FirstOrDefaultAsync(x => x.Id.Equals(request.GroupId));
+            
+            var guid = Guid.NewGuid();
+            var url = await _fileService.UploadFileAsync(request.File, request, guid);
+            
+            File file = new File()
+            {
+                Id = guid,
+                Name = request.Name,
+                Extension = request.Extension,
+                UploadDate = DateTime.Now,
+                Path = $"{group!.OrganizationId}/{group.Id}/{entry.Id}/{guid}",
+                EntryId = entry.Id,
+                Entry = entry,
+                Url = url
+            };
+            
+            entry.File = file;
+            entry.FileId = file.Id;
+            await _systemContext.Files.AddAsync(file);
+            await _systemContext.SaveChangesAsync();
+        }
     }
     
     public async Task DeleteEntry(Guid entryId, Guid groupId, string userId)
@@ -166,5 +193,37 @@ public class EntryService
         }
     }
 
+    public async Task DeleteFile(Guid entryId, Guid groupId, string userId)
+    {
+        var entry = await _systemContext.Entries
+            .Include(e => e.File)
+            .FirstOrDefaultAsync(x => x.Id.Equals(entryId) && x.GroupId.Equals(groupId));
 
+        if (entry is null)
+        {
+            throw new Exception("Entry not found");
+        }
+
+        if (!entry.LicencedUserId.Equals(userId))
+        {
+            throw new Exception("You are not the creator of this entry");
+        }
+
+        var file = await _systemContext.Files.FirstOrDefaultAsync(e => e.Id.Equals(entry.FileId));
+
+        if (file is null)
+        {
+            throw new Exception("File not found");
+        }
+        
+        string fileName = $"{file.Id}-{file.Name}{file.Extension}";
+        await _fileService.DeleteFileAsync(fileName);
+        
+        entry.File = null;
+        entry.FileId = null;
+        
+        _systemContext.Files.Remove(file);
+        await _systemContext.SaveChangesAsync();
+
+    }
 }
