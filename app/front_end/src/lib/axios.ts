@@ -1,4 +1,5 @@
-import { API_URL } from '@/types';
+import authService from '@/services/auth';
+import { API_URL, ORGANIZATION_API_URL } from '@/types';
 import { getUUID } from '@/utils';
 import axios, { AxiosInstance } from 'axios';
 
@@ -27,3 +28,53 @@ export const axiosInstance: AxiosInstance = axios.create({
     uuid: getUUID(),
   },
 });
+
+const token = authService.getToken();
+
+const instance = axios.create({
+  baseURL: ORGANIZATION_API_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+});
+
+instance.interceptors.request.use(
+  async (config) => {
+    const token = await authService.getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+instance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const newToken = await handleSessionExpired();
+      if (newToken) {
+        originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+        return instance(originalRequest);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+const handleSessionExpired = async () => {
+  const newToken = await authService.renewToken();
+  return newToken;
+};
+
+export default instance;

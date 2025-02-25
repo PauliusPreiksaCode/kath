@@ -5,9 +5,13 @@ import {
   ErrorOutline as BugReportIcon,
   Home as HomeIcon,
   SettingsOutlined as SettingsOutlinedIcon,
+  Person as PersonIcon,
+  Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { UserContext } from '@/services/authProvider';
 
 interface SidebarProps {
   settingsDialogOpen: () => void;
@@ -17,6 +21,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ settingsDialogOpen, feedbackDialogOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const userContext = useContext(UserContext);
 
   return (
     <Box sx={{ width: '4.2vw', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -31,6 +36,50 @@ export const Sidebar: React.FC<SidebarProps> = ({ settingsDialogOpen, feedbackDi
           alignItems: 'center',
         }}
       >
+        {!userContext.user ? (
+          <IconTitleButton
+          icon={
+            <PersonIcon
+              sx={{
+                width: '1.5rem',
+                height: '1.5rem',
+              }}
+            />
+          }
+          title={'Login'}
+          isActive={location.pathname === Paths.LOGIN}
+          onClick={() => navigate(Paths.LOGIN)}
+        />
+        ) : (
+          <>
+            <IconTitleButton
+            icon={
+              <PersonIcon
+                sx={{
+                  width: '1.5rem',
+                  height: '1.5rem',
+                }}
+              />
+            }
+            title={'User'}
+            isActive={location.pathname === Paths.USER}
+            onClick={() => navigate(Paths.USER)}
+          />
+            <IconTitleButton
+            icon={
+              <LogoutIcon
+                sx={{
+                  width: '1.5rem',
+                  height: '1.5rem',
+                }}
+              />
+            }
+            title={'Logout'}
+            isActive={false}
+            onClick={() => userContext.logout()}
+          />
+        </>
+        )}
         <IconTitleButton
           icon={
             <HomeIcon

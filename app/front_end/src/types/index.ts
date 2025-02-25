@@ -1,4 +1,4 @@
-export { API_URL, SOCKET_URL } from './constants/constants';
+export { API_URL, SOCKET_URL, ORGANIZATION_API_URL } from './constants/constants';
 export { Endpoints } from './constants/endpoints';
 export { Events } from './constants/events';
 export { ExternalLinks } from './constants/external_links';

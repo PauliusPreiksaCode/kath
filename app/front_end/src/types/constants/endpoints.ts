@@ -51,4 +51,15 @@ export const Endpoints = {
   WORKSPACE_MERGE: `/workspace/merge`,
   WORKSPACE_APPLY: `/workspace/apply`,
   WORKSPACE_ALIGN: `/workspace/align`,
+
+  LOGIN: `/auth/login`,
+  REGISTER: `/auth/registerClient`,
+  RENEWTOKEN: `/auth/accessToken`,
+  LOGOUT: `/auth/logOut`,
+  LICENCES: `/licences/licences`,
+  BUY_LICENCE: `/checkout`,
+  UPDATE_PAYMENT: `/checkout/payment-status`,
+  USER_LICENCES: `/licences/licenceLedgerEntries`,
+  USERS: `/users/allOtherUsers`,
+  TRANSFER_LICENCE: `/licences/transfer`,
 };

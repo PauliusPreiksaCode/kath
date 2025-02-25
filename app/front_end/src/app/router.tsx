@@ -2,6 +2,13 @@ import { BaseLayout } from '@/components/layouts/baseLayout';
 import { Paths } from '@/types';
 import { useMemo } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Login from '@/features/auth/login/Login';
+import Register from '@/features/auth/register/Register';
+import Organization from '@/features/organization/organization';
+import User from '@/features/user/user';
+import ProcessPayment from '@/features/user/ProcessPayment';
+import PaymentSuccess from '@/features/user/PaymentSuccess';
+import PaymentFailed from '@/features/user/PaymentFailed';
 
 /**
  * `AppRouter` component sets up the routing for the application using `createBrowserRouter` from `react-router-dom`.
@@ -41,6 +48,90 @@ export const AppRouter = () => {
               ),
             };
           },
+        },
+        {
+          path: Paths.LOGIN,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <Login {...props} />
+                </BaseLayout>
+              ),
+            };
+          },
+        },
+        {
+          path: Paths.REGISTER,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <Register {...props} />
+                </BaseLayout>
+              ),
+            };
+          },
+        },
+        {
+          path: Paths.ORGANIZATION,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <Organization {...props} />
+                </BaseLayout>
+              ),
+            };
+          }
+        },
+        {
+          path: Paths.USER,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <User {...props} />
+                </BaseLayout>
+              ),
+            };
+          }
+        },
+        {
+          path: Paths.PROCESS_PAYMENT,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <ProcessPayment {...props} />
+                </BaseLayout>
+              ),
+            };
+          }
+        },
+        {
+          path: Paths.PAYMENT_SUCCESS,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <PaymentSuccess {...props} />
+                </BaseLayout>
+              ),
+            };
+          }
+        },
+        {
+          path: Paths.PAYMENT_FAILED,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <PaymentFailed {...props} />
+                </BaseLayout>
+              ),
+            };
+          }
         },
         {
           path: Paths.NOTFOUND,

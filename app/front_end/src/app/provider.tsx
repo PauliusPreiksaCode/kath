@@ -1,4 +1,7 @@
 import { SessionContextProvider, StatusContextProvider, ThemeContextProvider } from '@/stores';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import AuthenticationProvider from '@/services/authProvider' ;
+import PaymentProvider from '@/services/paymentProvider';
 import { CircularProgress } from '@mui/material';
 import React from 'react';
 
@@ -34,16 +37,25 @@ type AppProviderProps = {
  *
  * @returns {JSX.Element} A `React.Suspense` component that wraps the `SessionContextProvider`, `ThemeContextProvider`, and `BaseLayout`.
  */
+
+const queryClient = new QueryClient();
+
 export const AppProvider = ({ children }: AppProviderProps) => {
   return (
-    <React.Suspense
-      fallback={<CircularProgress sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center' }} />}
-    >
-      <SessionContextProvider>
-        <StatusContextProvider>
-          <ThemeContextProvider>{children}</ThemeContextProvider>
-        </StatusContextProvider>
-      </SessionContextProvider>
-    </React.Suspense>
+        <React.Suspense
+          fallback={<CircularProgress sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center' }} />}
+        >
+          <SessionContextProvider>
+            <StatusContextProvider>
+              <AuthenticationProvider>
+                <PaymentProvider>
+                <QueryClientProvider client={queryClient}>
+                  <ThemeContextProvider>{children}</ThemeContextProvider>
+                </QueryClientProvider>
+                </PaymentProvider>
+              </AuthenticationProvider>
+            </StatusContextProvider>
+          </SessionContextProvider>
+        </React.Suspense>
   );
 };

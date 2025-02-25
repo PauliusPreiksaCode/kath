@@ -24,5 +24,12 @@
 export const Paths = {
   HOME: '/',
   MACROS: '/macros',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  ORGANIZATION: '/organization',
+  USER: '/user',
+  PROCESS_PAYMENT: '/process-payment',
+  PAYMENT_SUCCESS: '/payment-success',
+  PAYMENT_FAILED: '/payment-failed',
   NOTFOUND: '*',
 };

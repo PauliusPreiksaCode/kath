@@ -2,6 +2,7 @@ import '@/app/index.css';
 import { AppProvider } from '@/app/provider';
 import { AppRouter } from '@/app/router';
 
+
 /**
  * `App` component is the root component of the application, setting up the provider and routing.
  *
