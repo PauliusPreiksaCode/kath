@@ -3,5 +3,4 @@
 public class CheckoutOrderRequest
 {
     public Guid licenceId { get; set; }
-    public string UserId { get; set; }
 }

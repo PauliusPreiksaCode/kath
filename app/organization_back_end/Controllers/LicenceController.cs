@@ -17,6 +17,7 @@ public class LicenceController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     [Route("licences")]
     public async Task<IActionResult> GetAllLicences()
     {
@@ -37,16 +38,18 @@ public class LicenceController : ControllerBase
         return Ok();
     }
     
-    [HttpPost]
+    [HttpGet]
     [Authorize]
     [Route("licenceLedgerEntries")]
-    public async Task<IActionResult> GetLicenceLedgerEntries([FromBody] GetLicenceLedgerEntriesRequest request)
+    public async Task<IActionResult> GetLicenceLedgerEntries()
     {
         var errorResult = CheckErrors();
         if (errorResult != null)
             return errorResult;
+        
+        var userId = User.GetUserId();
        
-        var licenceLedgerEntries = await _licenceService.GetLicenceLedgerEntries(request.UserId);
+        var licenceLedgerEntries = await _licenceService.GetLicenceLedgerEntries(userId);
         return Ok(licenceLedgerEntries);
     }
     
@@ -85,7 +88,7 @@ public class LicenceController : ControllerBase
             if (errorResult != null)
                 return errorResult;
         
-            await _licenceService.TransferLicence(userId, request.NewUserId, request.LicenceId);
+            await _licenceService.TransferLicence(userId, request.NewUserId, request.LedgerEntryId);
             return Ok();
         }
         catch (Exception e)

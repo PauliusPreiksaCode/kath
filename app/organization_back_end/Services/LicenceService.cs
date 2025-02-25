@@ -33,10 +33,10 @@ public class LicenceService
         }
     }
     
-    public async Task TransferLicence(string userId, string newUserId, Guid licenceId)
+    public async Task TransferLicence(string userId, string newUserId, Guid ledgerEntryId)
     {
         var oldLedgerEntry = await _context.LicenceLedgerEntries
-            .FirstOrDefaultAsync(l => l.UserId.Equals(userId) && l.LicenceId.Equals(licenceId));
+            .FirstOrDefaultAsync(l => l.UserId.Equals(userId) && l.Id.Equals(ledgerEntryId));
         
         if (oldLedgerEntry is null)
             return;
@@ -47,7 +47,7 @@ public class LicenceService
             PurchaseDate = oldLedgerEntry.PurchaseDate,
             IsActive = oldLedgerEntry.IsActive,
             PaymentStatus = LicencePaymentStatus.Received,
-            LicenceId = licenceId,
+            LicenceId = oldLedgerEntry.LicenceId,
             UserId = newUserId
         };
         
@@ -57,6 +57,9 @@ public class LicenceService
         oldLedgerEntry.PaymentStatus = LicencePaymentStatus.Transferred;
         
         await _context.SaveChangesAsync();
+        
+        await UpdateUserRoles(userId);
+        await UpdateUserRoles(newUserId);
     }
     
     public async Task GenerateLicense(CreateLicenceRequest request)
@@ -174,7 +177,11 @@ public class LicenceService
     {
         return userId.IsNullOrEmpty() ? 
             await _context.LicenceLedgerEntries.ToListAsync() :
-            await _context.LicenceLedgerEntries.Where(l => l.UserId.Equals(userId)).ToListAsync();
+            await _context.LicenceLedgerEntries
+                .Include(l => l.Licence)
+                .Where(l => l.UserId.Equals(userId))
+                .OrderByDescending(l => l.PurchaseDate)
+                .ToListAsync();
     }
 
     public async Task ValidateLicenceExpiration(string userId)
@@ -183,16 +190,87 @@ public class LicenceService
             .Include(l => l.Licence)
             .ToListAsync();
         
+        bool changed = false;
+        
         foreach (var ledgerEntry in activeLedgerEntries)
         {
             DateTime expirationDate = ledgerEntry.PurchaseDate.AddDays(ledgerEntry.Licence.Duration);
             
             if (expirationDate < DateTime.Now)
             {
+                changed = true;
                 ledgerEntry.IsActive = false;
                 await _context.SaveChangesAsync();
             }
         }
+        
+        if (changed)
+            await UpdateUserRoles(userId);
+    }
+
+    private async Task UpdateUserRoles(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        
+        if (user is null)
+            return;
+        
+        var hasActiveOrganizationLicence = await _context.LicenceLedgerEntries
+            .AnyAsync(l => l.UserId.Equals(userId) && l.IsActive && l.Licence.Type == LicenceType.Organization);
+        var hasOrganizationRole = await _userManager.IsInRoleAsync(user, Roles.OrganizationOwner);
+        
+        if (hasOrganizationRole)
+        {
+            if (!hasActiveOrganizationLicence)
+            {
+                await _userManager.RemoveFromRoleAsync(user, Roles.OrganizationOwner);
+                await _context.Database.ExecuteSqlRawAsync(
+                    "UPDATE AspNetUsers SET UserType = {0} WHERE Id = {1}", 
+                    "LicencedUser", userId
+                );
+            }
+        }
+        else
+        {
+            if(hasActiveOrganizationLicence)
+            {
+                await _userManager.AddToRoleAsync(user, Roles.OrganizationOwner);
+                await _context.Database.ExecuteSqlRawAsync(
+                    "UPDATE AspNetUsers SET UserType = {0} WHERE Id = {1}", 
+                    "OrganizationOwner", userId
+                );
+            }
+        }
+        
+        
+        var hasActiveUserLicence = await _context.LicenceLedgerEntries
+            .AnyAsync(l => l.UserId.Equals(userId) && l.IsActive && l.Licence.Type == LicenceType.User);
+        
+        var hasLicenceRole = await _userManager.IsInRoleAsync(user, Roles.LicencedUser);
+        if (hasLicenceRole)
+        {
+            if (!hasActiveUserLicence && !hasOrganizationRole)
+            {
+                await _userManager.RemoveFromRoleAsync(user, Roles.LicencedUser);
+                await _context.Database.ExecuteSqlRawAsync(
+                    "UPDATE AspNetUsers SET UserType = {0} WHERE Id = {1}", 
+                    "User", userId
+                );
+            }
+        }
+        else
+        {
+            if(hasActiveUserLicence && !hasOrganizationRole)
+            {
+                await _userManager.AddToRoleAsync(user, Roles.LicencedUser);
+                await _context.Database.ExecuteSqlRawAsync(
+                    "UPDATE AspNetUsers SET UserType = {0} WHERE Id = {1}", 
+                    "LicencedUser", userId
+                );
+            }
+        }
+        
+        await _context.SaveChangesAsync();
     }
     
     public async Task<bool> HasRole(string userId, string role)

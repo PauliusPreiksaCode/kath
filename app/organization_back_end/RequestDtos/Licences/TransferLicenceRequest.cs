@@ -3,5 +3,5 @@
 public class TransferLicenceRequest
 {
     public required string NewUserId { get; set; }
-    public Guid LicenceId { get; set; }
+    public required Guid LedgerEntryId { get; set; }
 }

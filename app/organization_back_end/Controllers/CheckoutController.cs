@@ -30,15 +30,17 @@ public class CheckoutController : ControllerBase
         var licence = await _licenceService.GetLicenceById(request.licenceId);
         if (licence is null)
             return NotFound();
+        
+        var userId = User.GetUserId();
 
-        var user = await _userManager.FindByIdAsync(request.UserId);
+        var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
             return NotFound();
         
         var options = new SessionCreateOptions
         {
-            SuccessUrl = "https://www.google.com/",
-            CancelUrl = "https://www.youtube.com/",
+            SuccessUrl = "http://localhost:5173/process-payment",
+            CancelUrl = "http://localhost:5173/process-payment",
             PaymentMethodTypes = new List<string>
             {
                 "card",
@@ -65,7 +67,7 @@ public class CheckoutController : ControllerBase
         
         var service = new SessionService();
         var session = await service.CreateAsync(options);
-        var ledgerEntry = await _licenceService.CreateInitialLicenceLedgerEntry(licence, request.UserId);
+        var ledgerEntry = await _licenceService.CreateInitialLicenceLedgerEntry(licence, userId);
         
         return Ok(new { sessionId = session.Id, redirectUrl = session.Url, ledgerEntry = ledgerEntry });
     }
@@ -80,12 +82,12 @@ public class CheckoutController : ControllerBase
         if (session.PaymentStatus == "paid")
         {
             await _licenceService.UpdateLicenceLedgerEntry(request.LedgerId, LicencePaymentStatus.Paid, session);
-            return Ok();
+            return Ok("Payment successful");
         }
         else
         {
             await _licenceService.UpdateLicenceLedgerEntry(request.LedgerId, LicencePaymentStatus.Unpaid, session);
-            return BadRequest();
+            return BadRequest("Payment failed");
         }
     }
 }
