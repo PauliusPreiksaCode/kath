@@ -4,11 +4,12 @@ import { useMemo } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from '@/features/auth/login/Login';
 import Register from '@/features/auth/register/Register';
-import Organization from '@/features/organization/organization';
+import Organization from '@/features/organization/OrganizationList';
 import User from '@/features/user/user';
 import ProcessPayment from '@/features/user/ProcessPayment';
 import PaymentSuccess from '@/features/user/PaymentSuccess';
 import PaymentFailed from '@/features/user/PaymentFailed';
+import PrivateRoute from './routes/PrivateRoute';
 
 /**
  * `AppRouter` component sets up the routing for the application using `createBrowserRouter` from `react-router-dom`.
@@ -75,6 +76,7 @@ export const AppRouter = () => {
         },
         {
           path: Paths.ORGANIZATION,
+          element: <PrivateRoute allowedRoles={['LicencedUser', 'OrganizationOwner']} />,
           lazy: async () => {
             return {
               Component: (props) => (
@@ -87,6 +89,7 @@ export const AppRouter = () => {
         },
         {
           path: Paths.USER,
+          element: <PrivateRoute allowedRoles={['User', 'LicencedUser', 'OrganizationOwner']} />,
           lazy: async () => {
             return {
               Component: (props) => (
@@ -99,6 +102,7 @@ export const AppRouter = () => {
         },
         {
           path: Paths.PROCESS_PAYMENT,
+          element: <PrivateRoute allowedRoles={['User', 'LicencedUser', 'OrganizationOwner']} />,
           lazy: async () => {
             return {
               Component: (props) => (
@@ -111,6 +115,7 @@ export const AppRouter = () => {
         },
         {
           path: Paths.PAYMENT_SUCCESS,
+          element: <PrivateRoute allowedRoles={['User', 'LicencedUser', 'OrganizationOwner']} />,
           lazy: async () => {
             return {
               Component: (props) => (
@@ -123,6 +128,7 @@ export const AppRouter = () => {
         },
         {
           path: Paths.PAYMENT_FAILED,
+          element: <PrivateRoute allowedRoles={['User', 'LicencedUser', 'OrganizationOwner']} />,
           lazy: async () => {
             return {
               Component: (props) => (

@@ -9,6 +9,7 @@ interface Props {
   onClick?: () => void;
   isActive?: boolean;
   disabled?: boolean;
+  fontSize?: string;
 }
 
 /**
@@ -39,6 +40,7 @@ export const IconTitleButton: React.FC<Props> = ({
   onClick,
   isActive = false,
   disabled = false,
+  fontSize = '0.875rem',
 }) => {
   const Theme = useTheme();
 
@@ -73,7 +75,7 @@ export const IconTitleButton: React.FC<Props> = ({
         <Typography
           sx={{
             color: disabled ? alpha(Theme.palette.primary.contrastText, 0.4) : Theme.palette.primary.contrastText,
-            fontSize: '0.875rem',
+            fontSize: fontSize,
             fontWeight: 'bold',
             cursor: 'pointer',
           }}

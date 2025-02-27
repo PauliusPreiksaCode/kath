@@ -7,6 +7,7 @@ import {
   SettingsOutlined as SettingsOutlinedIcon,
   Person as PersonIcon,
   Logout as LogoutIcon,
+  Business as BusinessIcon,
 } from '@mui/icons-material';
 import { Box } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -76,8 +77,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ settingsDialogOpen, feedbackDi
             }
             title={'Logout'}
             isActive={false}
-            onClick={() => userContext.logout()}
+            onClick={() => {
+              userContext.logout()
+              navigate(Paths.HOME)
+            }}
           />
+        <IconTitleButton
+          icon={
+            <BusinessIcon
+              sx={{
+                width: '1.5rem',
+                height: '1.5rem',
+              }}
+            />
+          }
+          title={'Colab'}
+          isActive={location.pathname === Paths.ORGANIZATION}
+          onClick={() => navigate(Paths.ORGANIZATION)}
+        />
         </>
         )}
         <IconTitleButton

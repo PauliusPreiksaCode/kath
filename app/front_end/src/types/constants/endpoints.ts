@@ -62,4 +62,10 @@ export const Endpoints = {
   USER_LICENCES: `/licences/licenceLedgerEntries`,
   USERS: `/users/allOtherUsers`,
   TRANSFER_LICENCE: `/licences/transfer`,
+  ORGANIZATIONS: `/organizations/allOrganizations`,
+  ORGANIZATION: `/organizations`,
+  ADD_TO_ORGANIZATION: `/organizations/addUser`,
+  REMOVE_FROM_ORGANIZATION: `/organizations/removeUser`,
+  ORGANIZATION_USERS: `/organizations/organizationUsers`,
+  NON_ORGANIZATION_USERS: `/organizations/nonOrganizationUsers`,
 };

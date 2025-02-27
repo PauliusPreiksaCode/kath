@@ -25,6 +25,7 @@ async function renewToken () {
   
   function removeCookies(){
     Cookies.remove('jwtToken');
+    Cookies.remove('RefreshToken');
   }
   
   function getUserInfo() {

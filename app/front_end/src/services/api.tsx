@@ -30,7 +30,7 @@ export async function renewToken() {
       });
 }
 
-export async function logOut() {
+export async function logOutUser() {
     return await instance
       .post(Endpoints.LOGOUT)
       .then((res) => res.data)
@@ -81,6 +81,70 @@ export async function getUsers() {
 export async function transferLicence(licence : any) {
     return await instance
       .post(Endpoints.TRANSFER_LICENCE, licence)
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function getOrganizations() {
+    return await instance
+      .get(Endpoints.ORGANIZATIONS)
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function createOrganization(organization : any) {
+    return await instance
+      .post(Endpoints.ORGANIZATION, organization)
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function updateOrganization(organization : any) {
+    return await instance
+      .put(Endpoints.ORGANIZATION, organization)
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function deleteOrganization(organization : any) {
+    return await instance
+      .delete(Endpoints.ORGANIZATION, { data: organization })
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function addUserToOrganization(organizationUser : any) {
+    return await instance
+      .post(Endpoints.ADD_TO_ORGANIZATION, organizationUser)
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function removeUserFromOrganization(organizationUser : any) {
+    return await instance
+      .post(Endpoints.REMOVE_FROM_ORGANIZATION, organizationUser)
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function getOrganizationUsers(id : any) {
+    return await instance
+      .get(`${Endpoints.ORGANIZATION_USERS}/${id}`) 
+      .then((res) => res.data)
+      .catch(() => {
+      });
+}
+
+export async function getNonOrganizationUsers(id : any) {
+    return await instance
+      .get(`${Endpoints.NON_ORGANIZATION_USERS}/${id}`)
       .then((res) => res.data)
       .catch(() => {
       });
