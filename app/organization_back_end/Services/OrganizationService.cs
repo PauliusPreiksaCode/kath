@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.RequestDtos.Organization;
+using organization_back_end.ResponseDto.Organizations;
+using organization_back_end.ResponseDto.Users;
 
 namespace organization_back_end.Services;
 
@@ -19,7 +21,7 @@ public class OrganizationService
         _groupService = groupService;
     }
     
-    public async Task<ICollection<Organization>> GetOrganizations(string userId)
+    public async Task<ICollection<OrganizationResponseDto>> GetOrganizations(string userId)
     {
         var userOrganizationsId = await _systemContext.OrganizationUsers
             .Where(u => u.UserId.Equals(userId))
@@ -30,7 +32,18 @@ public class OrganizationService
         var organizations = await _systemContext.Organizations
             .AsNoTracking()
             .Include(o => o.Groups)
+            .Include(o => o.Users)
             .Where(o => userOrganizationsId.Contains(o.Id))
+            .Select(o => new OrganizationResponseDto()
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Description = o.Description,
+                CreationDate = o.CreationDate,
+                Groups = o.Groups,
+                OwnerId = o.OwnerId,
+                MembersCount = o.Users.Count
+            })
             .ToListAsync();
         
         return organizations;
@@ -180,5 +193,47 @@ public class OrganizationService
             _systemContext.Organizations.Remove(organization);
             await _systemContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<ICollection<UserResponseDto>> GetOrganizationUsers(Guid organizationId, string userId)
+    {
+        var organization = await _systemContext.Organizations
+            .Include(o => o.Users).ThenInclude(organizationUser => organizationUser.User)
+            .FirstOrDefaultAsync(x => x.Id.Equals(organizationId));
+
+        if (organization is null)
+            return Enumerable.Empty<UserResponseDto>().ToList();
+        
+        var users = organization.Users
+            .Where(x => !x.UserId.Equals(userId))
+            .Select(x => new UserResponseDto()
+            {
+                Id = x.UserId,
+                Email = x.User.UserName!
+            })
+            .ToList();
+        
+        return users; 
+    }
+    
+    public async Task<ICollection<UserResponseDto>> GetNonOrganizationUsers(Guid organizationId, string userId)
+    {
+        var organization = await _systemContext.Organizations
+            .Include(o => o.Users).ThenInclude(organizationUser => organizationUser.User)
+            .FirstOrDefaultAsync(x => x.Id.Equals(organizationId));
+
+        if (organization is null)
+            return Enumerable.Empty<UserResponseDto>().ToList();
+        
+        var users = await _systemContext.Users
+            .Where(u => !organization.Users.Select(x => x.UserId).Contains(u.Id) && !u.Id.Equals(userId))
+            .Select(u => new UserResponseDto()
+            {
+                Id = u.Id,
+                Email = u.UserName!
+            })
+            .ToListAsync();
+        
+        return users;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.Helpers;
@@ -16,16 +15,14 @@ public class OrganizationController : ControllerBase
     private readonly OrganizationService _organizationService;
     private readonly UserManager<User> _userManager;
     private readonly LicenceService _licenceService;
-    private readonly SystemContext _context;
 
 
     public OrganizationController(OrganizationService organizationService, UserManager<User> userManager,
-        LicenceService licenceService, SystemContext context)
+        LicenceService licenceService)
     {
         _organizationService = organizationService;
         _userManager = userManager;
         _licenceService = licenceService;
-        _context = context;
     }
 
     [HttpGet]
@@ -51,7 +48,7 @@ public class OrganizationController : ControllerBase
             {
                 var organizationUser = user as OrganizationOwner;
 
-                await _organizationService.CreateOrganization(userId, request, organizationUser);
+                await _organizationService.CreateOrganization(userId, request, organizationUser!);
                 return Ok();
             }
 
@@ -142,6 +139,48 @@ public class OrganizationController : ControllerBase
 
             await _organizationService.RemoveUserFromOrganization(request.userId, request.organizationId);
             return Ok();
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, e.Message);
+        }
+    }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("organizationUsers/{id:guid}")]
+    public async Task<IActionResult> GetOrganizationUsers([FromRoute] Guid id)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+            var isOwner = await _organizationService.IsUserOrganizationOwner(userId, id);
+            if (!isOwner)
+                return Forbid();
+            
+            var users = await _organizationService.GetOrganizationUsers(id, userId);
+            return Ok(users);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, e.Message);
+        }
+    }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("nonOrganizationUsers/{id:guid}")]
+    public async Task<IActionResult> GetNonOrganizationUsers([FromRoute] Guid id)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+            var isOwner = await _organizationService.IsUserOrganizationOwner(userId, id);
+            if (!isOwner)
+                return Forbid();
+            
+            var users = await _organizationService.GetNonOrganizationUsers(id, userId);
+            return Ok(users);
         }
         catch (Exception e)
         {
