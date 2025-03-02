@@ -93,6 +93,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<JwtService>();
 builder.Services.AddTransient<SessionService>();
 builder.Services.AddScoped<BlobService>();
+builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<FileService>();
 builder.Services.AddTransient<LicenceService>();
 builder.Services.AddTransient<UserService>();

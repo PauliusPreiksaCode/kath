@@ -36,17 +36,17 @@ public class EntryController : ControllerBase
                 return Ok(groups);
             }
             
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot get entries");
         }
     }
     
     [HttpGet]
     [Authorize]
-    [Route("download-photo/{groupId:guid}/{entryId:guid}")]
+    [Route("download-file/{groupId:guid}/{entryId:guid}")]
     public async Task<IActionResult> DownloadFile([FromRoute] Guid groupId, [FromRoute] Guid entryId)
     {
         try
@@ -60,11 +60,11 @@ public class EntryController : ControllerBase
                 return file;
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return NotFound();
+            return NotFound("File not found");
         }
     }
     
@@ -83,11 +83,11 @@ public class EntryController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot create entry");
         }
     }
     
@@ -106,11 +106,11 @@ public class EntryController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot update entry");
         }
     }
     
@@ -129,17 +129,17 @@ public class EntryController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot delete entry");
         }
     }
     
     [HttpDelete]
     [Authorize]
-    [Route("delete-photo/{groupId:guid}/{entryId:guid}")]
+    [Route("delete-file/{groupId:guid}/{entryId:guid}")]
     public async Task<IActionResult> DeleteFile([FromRoute] Guid groupId, [FromRoute] Guid entryId)
     {
         try
@@ -153,16 +153,16 @@ public class EntryController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
             return e.Message switch
             {
-                "Entry not found" => NotFound(),
-                "You are not the creator of this entry" => Forbid(),
-                "File not found" => NotFound(),
-                _ => StatusCode(400, e.Message)
+                "Entry not found" => NotFound("Entry not found"),
+                "You are not the creator of this entry" => StatusCode(StatusCodes.Status403Forbidden, "You are not the creator of this entry"),
+                "File not found" => NotFound("File not found"),
+                _ => StatusCode(400, "Cannot delete file")
             };
         }
     }

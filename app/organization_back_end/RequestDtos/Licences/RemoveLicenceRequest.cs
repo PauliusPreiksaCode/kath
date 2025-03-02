@@ -2,5 +2,5 @@
 
 public class RemoveLicenceRequest
 {
-    public Guid LicenceId { get; set; }
+    public Guid LicenceLedgerId { get; set; }
 }

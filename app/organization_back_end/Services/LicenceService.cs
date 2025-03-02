@@ -20,10 +20,10 @@ public class LicenceService
         _userManager = userManager;
     }
     
-    public async Task RemoveLicence(Guid licenceId, string userId)
+    public async Task RemoveLicence(Guid licenceLedgerId, string userId)
     {
         var ledgerEntries = await _context.LicenceLedgerEntries
-            .Where(l => l.LicenceId.Equals(licenceId) && l.UserId.Equals(userId) && l.IsActive)
+            .Where(l => l.Id.Equals(licenceLedgerId) && l.UserId.Equals(userId) && l.IsActive)
             .ToListAsync();
 
         foreach (var ledgerEntry in ledgerEntries)

@@ -40,11 +40,11 @@ public class GroupController : ControllerBase
                 return Ok(groups);
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot get groups");
         }
     }
     
@@ -63,11 +63,11 @@ public class GroupController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot create group");
         }
     }
 
@@ -86,11 +86,11 @@ public class GroupController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot update group");
         }
     }
 
@@ -109,11 +109,11 @@ public class GroupController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot delete group");
         }
     }
 }

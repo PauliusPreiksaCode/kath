@@ -66,12 +66,12 @@ public class LicenceController : ControllerBase
             if (errorResult != null)
                 return errorResult;
         
-            await _licenceService.RemoveLicence(request.LicenceId, userId);
+            await _licenceService.RemoveLicence(request.LicenceLedgerId, userId);
             return Ok();
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot remove licence");
         }
     }
     
@@ -93,7 +93,7 @@ public class LicenceController : ControllerBase
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot transfer licence");
         }
 
     }

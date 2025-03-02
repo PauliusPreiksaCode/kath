@@ -52,11 +52,11 @@ public class OrganizationController : ControllerBase
                 return Ok();
             }
 
-            return Forbid();
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot create organization");
         }
     }
 
@@ -69,14 +69,14 @@ public class OrganizationController : ControllerBase
             var userId = User.GetUserId();
             var isOwner = await _organizationService.IsUserOrganizationOwner(userId, request.Id);
             if (!isOwner)
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, "User is not organization owner");
 
             await _organizationService.UpdateOrganization(request.Id, request.Name, request.Description);
             return Ok();
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot update organization");
         }
     }
 
@@ -89,14 +89,14 @@ public class OrganizationController : ControllerBase
             var userId = User.GetUserId();
             var isOwner = await _organizationService.IsUserOrganizationOwner(userId, request.Id);
             if (!isOwner)
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, "User is not organization owner");
 
             await _organizationService.DeleteOrganization(request.Id);
             return Ok();
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot delete organization");
         }
     }
 
@@ -110,18 +110,18 @@ public class OrganizationController : ControllerBase
             var userId = User.GetUserId();
             var isOwner = await _organizationService.IsUserOrganizationOwner(userId, request.organizationId);
             if (!isOwner)
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, "User is not organization owner");
             
             if(!(await _licenceService.HasRole(request.userId, Roles.LicencedUser) ||
                await _licenceService.HasRole(request.userId, Roles.OrganizationOwner)))
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
 
             await _organizationService.AddUserToOrganization(request.userId, request.organizationId);
             return Ok();
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot add user to organization");
         }
     }
     
@@ -135,14 +135,14 @@ public class OrganizationController : ControllerBase
             var userId = User.GetUserId();
             var isOwner = await _organizationService.IsUserOrganizationOwner(userId, request.organizationId);
             if (!isOwner)
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, "User is not organization owner");
 
             await _organizationService.RemoveUserFromOrganization(request.userId, request.organizationId);
             return Ok();
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot remove user from organization");
         }
     }
     
@@ -156,14 +156,14 @@ public class OrganizationController : ControllerBase
             var userId = User.GetUserId();
             var isOwner = await _organizationService.IsUserOrganizationOwner(userId, id);
             if (!isOwner)
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, "User is not organization owner");
             
             var users = await _organizationService.GetOrganizationUsers(id, userId);
             return Ok(users);
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot get organization users");
         }
     }
     
@@ -177,14 +177,14 @@ public class OrganizationController : ControllerBase
             var userId = User.GetUserId();
             var isOwner = await _organizationService.IsUserOrganizationOwner(userId, id);
             if (!isOwner)
-                return Forbid();
+                return StatusCode(StatusCodes.Status403Forbidden, "User is not organization owner");
             
             var users = await _organizationService.GetNonOrganizationUsers(id, userId);
             return Ok(users);
         }
         catch (Exception e)
         {
-            return StatusCode(400, e.Message);
+            return StatusCode(400, "Cannot get non organization users");
         }
     }
 }

@@ -13,12 +13,14 @@ public class OrganizationService
     private readonly SystemContext _systemContext;
     private readonly UserManager<User> _userManager;
     private readonly GroupService _groupService;
+    private readonly EmailService _emailService;
 
-    public OrganizationService(SystemContext systemContext, UserManager<User> userManager, GroupService groupService)
+    public OrganizationService(SystemContext systemContext, UserManager<User> userManager, GroupService groupService, EmailService emailService)
     {
         _systemContext = systemContext;
         _userManager = userManager;
         _groupService = groupService;
+        _emailService = emailService;
     }
     
     public async Task<ICollection<OrganizationResponseDto>> GetOrganizations(string userId)
@@ -126,8 +128,11 @@ public class OrganizationService
 
             (user as LicencedUser)!.OrganizationUsers ??= new List<OrganizationUser>();
             (user as LicencedUser)!.OrganizationUsers?.Add(organizationUser);
-
+            
             await _systemContext.SaveChangesAsync();
+            
+            var organizationOwner = await _userManager.FindByIdAsync(organization.OwnerId);
+            _emailService.SendInvitationEmail(organization.Name, organizationOwner!.Name, user.Name, user.Email!);
         }
     }
     

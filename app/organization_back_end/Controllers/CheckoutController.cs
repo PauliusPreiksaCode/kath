@@ -35,7 +35,7 @@ public class CheckoutController : ControllerBase
 
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
-            return NotFound();
+            return NotFound("User not found");
         
         var options = new SessionCreateOptions
         {

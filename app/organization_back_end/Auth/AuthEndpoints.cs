@@ -17,14 +17,16 @@ public class AuthEndpoints : ControllerBase
     private readonly SessionService _sessionService;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly LicenceService _licenceService;
+    private readonly EmailService _emailService;
 
-    public AuthEndpoints(UserManager<User> userManager, JwtService jwtService, IHttpContextAccessor httpContextAccessor, SessionService sessionService, LicenceService licenceService)
+    public AuthEndpoints(UserManager<User> userManager, JwtService jwtService, IHttpContextAccessor httpContextAccessor, SessionService sessionService, LicenceService licenceService, EmailService emailService)
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _httpContextAccessor = httpContextAccessor;
         _sessionService = sessionService;
         _licenceService = licenceService;
+        _emailService = emailService;
     }
 
     [HttpPost]
@@ -66,7 +68,7 @@ public class AuthEndpoints : ControllerBase
                 return StatusCode(422, "Failed to assign role to user");
             scope.Complete();
         }
-
+        _emailService.SendRegisterEmail(newUser.Email, newUser.Name);
         return Created();
     }
 
