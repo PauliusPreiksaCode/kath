@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
 import authService from './auth';
 import { logOutUser } from './api';
+import toastService from './toast';
 
 interface Props {
   children?: React.ReactNode;
@@ -45,6 +46,7 @@ const AuthenticationProvider : React.FC<Props> = ({ children }) => {
     setUser(null);
     sessionStorage.removeItem('user');
     await logOutUser();
+    toastService.success('You have been logged out');
   };
 
   const login = (token : any) => {

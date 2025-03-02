@@ -4,6 +4,9 @@ import AuthenticationProvider from '@/services/authProvider' ;
 import PaymentProvider from '@/services/paymentProvider';
 import { CircularProgress } from '@mui/material';
 import React from 'react';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import TOAST_STYLES from '@/types/constants/toastStyle';
 
 type AppProviderProps = {
   children: React.ReactNode;
@@ -45,6 +48,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         <React.Suspense
           fallback={<CircularProgress sx={{ display: 'flex', justifyItems: 'center', alignContent: 'center' }} />}
         >
+          <ToastContainer {...TOAST_STYLES} />
           <SessionContextProvider>
             <StatusContextProvider>
               <AuthenticationProvider>

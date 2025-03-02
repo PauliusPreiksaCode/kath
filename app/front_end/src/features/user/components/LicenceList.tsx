@@ -4,9 +4,11 @@ import { licenceType } from "@/types/enums/licenceType";
 import { paymentStatus } from "@/types/enums/paymentStatus";
 import { useState } from "react";
 import TransferLicenceDialog from "./TransferLicenceDialog";
+import RemoveLicenceDialog from "./RemoveLicenceDialog";
 
 export default function LicenceList({ licenceList }: { licenceList: LicenceLedgerEntry[] }) {
     const [openTransferDialog, setOpenTransferDialog] = useState(false);
+    const [openDeactivateDialog, setOpenDeactivateDialog] = useState(false);
     const [selectedLedgerEntry, setSelectedLedgerEntry] = useState<LicenceLedgerEntry | null>(null);
     const theme = useTheme();
 
@@ -44,16 +46,16 @@ export default function LicenceList({ licenceList }: { licenceList: LicenceLedge
                             opacity: ledgerEntry.isActive ? 1 : 0.6,
                             alignItems: 'center',
                         }}>
-                            <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.primary.main, flex: '1 1 5%' }}>
+                            <Typography variant="h6" sx={{ fontWeight: 'bold', color: theme.palette.primary.main, flex: '1 1 2%' }}>
                                 {ledgerEntry.licence?.name}
                             </Typography>
-                            <Typography sx={{ flex: '1 1 20%' }}>
+                            <Typography sx={{ flex: '1 1 15%' }}>
                                 <strong>Purchase Date: {ledgerEntry.purchaseDate.split("T")[0]}</strong> 
                             </Typography>
-                            <Typography sx={{ flex: '1 1 10%' }}>
+                            <Typography sx={{ flex: '1 1 8%' }}>
                                 <strong>Is Active:</strong> {ledgerEntry.isActive ? "Yes" : "No"}
                             </Typography>
-                            <Typography sx={{ flex: '1 1 15%' }}>
+                            <Typography sx={{ flex: '1 1 12%' }}>
                                 <strong>Payment Status:</strong> {paymentStatus[ledgerEntry.paymentStatus]}
                             </Typography>
                             <Typography sx={{ flex: '1 1 20%' }}>
@@ -74,6 +76,21 @@ export default function LicenceList({ licenceList }: { licenceList: LicenceLedge
                             >
                                 Transfer licence
                             </Button>
+                            <Button
+                                variant="contained"
+                                disabled={!ledgerEntry.isActive}
+                                sx={{
+                                    flex: '1 1 10%',
+                                    backgroundColor: theme.palette.primary.main,
+                                    color: theme.palette.primary.contrastText,
+                                    }}
+                                    onClick={() => {
+                                        setSelectedLedgerEntry(ledgerEntry);
+                                        setOpenDeactivateDialog(true);
+                                    }}
+                            >
+                                Deactivate licence
+                            </Button>
                         </Box>
                     </Grid>
                 ))}
@@ -82,6 +99,11 @@ export default function LicenceList({ licenceList }: { licenceList: LicenceLedge
                 open={openTransferDialog} 
                 onClose={() => setOpenTransferDialog(false)} 
                 licenceLedger={selectedLedgerEntry} 
+            />
+            <RemoveLicenceDialog
+                open={openDeactivateDialog}
+                onClose={() => setOpenDeactivateDialog(false)}
+                licenceLedger={selectedLedgerEntry}
             />
         </Box>
     );

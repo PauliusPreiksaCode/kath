@@ -25,7 +25,8 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
     "socket.io-client": "^4.8.0",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "@mui/x-data-grid-generator": "^7.19.0",

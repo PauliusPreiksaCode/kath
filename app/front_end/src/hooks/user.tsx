@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { register, getAvailableLicences, buyLicence, updatePayment, getUserLicences, getUsers, transferLicence } from '@/services/api';
+import { register, getAvailableLicences, buyLicence, updatePayment, getUserLicences, getUsers, transferLicence, removeLicence } from '@/services/api';
 import { useNavigate } from 'react-router';
+import toastService from '@/services/toast';
 
 
 export const useRegister = () => {
@@ -8,7 +9,9 @@ export const useRegister = () => {
   
   return useMutation({
     mutationFn: register,
-    onSuccess: () => {
+    onSuccess: (e) => {
+      if (e !== undefined)
+        toastService.success("User registered successfully");
       navigate('/login');
     },
   });
@@ -37,7 +40,9 @@ export const useUpdatePayment = () => {
 
   return useMutation({
     mutationFn: updatePayment,
-    onSuccess: () => {
+    onSuccess: (e) => {
+      if (e !== undefined) 
+        toastService.success("Payment updated successfully");
       queryClient.invalidateQueries({ queryKey: ['userLicences'] });
     },
   });
@@ -66,7 +71,22 @@ export const useTransferLicence = () => {
 
   return useMutation({
     mutationFn: transferLicence,
-    onSuccess: () => {
+    onSuccess: (e) => {
+      if (e !== undefined)
+        toastService.success("Licence transferred successfully");
+      queryClient.invalidateQueries({ queryKey: ['userLicences'] });
+    },
+  });
+}
+
+export const useRemoveLicence = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: removeLicence,
+    onSuccess: (e) => {
+      if (e !== undefined)
+        toastService.success("Licence removed successfully");
       queryClient.invalidateQueries({ queryKey: ['userLicences'] });
     },
   });

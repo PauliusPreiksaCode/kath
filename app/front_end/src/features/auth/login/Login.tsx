@@ -6,6 +6,7 @@ import { Formik, Form } from 'formik';
 import { loginTemplateValidation } from '@/validation/loginTemplate';
 import { login } from '@/services/api';
 import { Link } from 'react-router-dom';
+import toastService from '@/services/toast';
 
 
 function Login(){
@@ -41,7 +42,7 @@ function Login(){
           };
 
           const response = await login(request);
-          
+          toastService.success('Login successful');
           user?.login(response?.token);
 
           navigate('/');

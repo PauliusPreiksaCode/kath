@@ -22,7 +22,6 @@ export default function Organization() {
     const getOrganizations = useGetOrganizations();
     const Theme = useTheme();
     const userContext = useContext(UserContext);
-    
 
     useEffect(() => {
         setOrganizations(getOrganizations.data || [])

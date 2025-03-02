@@ -1,5 +1,6 @@
 import { getOrganizations, createOrganization, updateOrganization, deleteOrganization, addUserToOrganization, removeUserFromOrganization, getOrganizationUsers, getNonOrganizationUsers } from '@/services/api';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import toastService from '@/services/toast';
 
 export const useGetOrganizations = () => {
     return useQuery({
@@ -15,7 +16,9 @@ export const useCreateOrganization = () => {
 
     return useMutation({
         mutationFn: createOrganization,
-        onSuccess: () => {
+        onSuccess: (e) => {
+            if (e !== undefined) 
+                toastService.success("Organization created successfully");
             queryClient.invalidateQueries({ queryKey: ['organizations'] });
         },
     });
@@ -26,7 +29,9 @@ export const useUpdateOrganization = () => {
 
     return useMutation({
         mutationFn: updateOrganization,
-        onSuccess: () => {
+        onSuccess: (e) => {
+            if (e !== undefined) 
+                toastService.success("Organization updated successfully");
             queryClient.invalidateQueries({ queryKey: ['organizations'] });
         },
     });
@@ -37,7 +42,9 @@ export const useDeleteOrganization = () => {
 
     return useMutation({
         mutationFn: deleteOrganization,
-        onSuccess: () => {
+        onSuccess: (e) => {
+            if (e !== undefined) 
+                toastService.success("Organization deleted successfully");
             queryClient.invalidateQueries({ queryKey: ['organizations'] });
         },
     });
@@ -48,7 +55,9 @@ export const useAddUserToOrganization = () => {
 
     return useMutation({
         mutationFn: addUserToOrganization,
-        onSuccess: () => {
+        onSuccess: (e) => {
+            if (e !== undefined) 
+                toastService.success("User added to organization successfully");
             queryClient.invalidateQueries({ queryKey: ['organizations'] });
         },
     });
@@ -59,7 +68,9 @@ export const useRemoveUserFromOrganization = () => {
 
     return useMutation({
         mutationFn: removeUserFromOrganization,
-        onSuccess: () => {
+        onSuccess: (e) => {
+            if (e !== undefined) 
+                toastService.success("User removed from organization successfully");
             queryClient.invalidateQueries({ queryKey: ['organizations'] });
         },
     });

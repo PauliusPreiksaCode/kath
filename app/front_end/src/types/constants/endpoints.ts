@@ -60,6 +60,7 @@ export const Endpoints = {
   BUY_LICENCE: `/checkout`,
   UPDATE_PAYMENT: `/checkout/payment-status`,
   USER_LICENCES: `/licences/licenceLedgerEntries`,
+  REMOVE_LICENCE: `/licences/remove`,
   USERS: `/users/allOtherUsers`,
   TRANSFER_LICENCE: `/licences/transfer`,
   ORGANIZATIONS: `/organizations/allOrganizations`,
