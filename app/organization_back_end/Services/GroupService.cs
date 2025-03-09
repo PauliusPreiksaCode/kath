@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.RequestDtos.Group;
+using organization_back_end.ResponseDto.Groups;
 
 namespace organization_back_end.Services;
 
@@ -47,10 +48,20 @@ public class GroupService
         await _systemContext.SaveChangesAsync();
     }
     
-    public async Task<ICollection<Group>> GetGroups(Guid organizationId)
+    public async Task<ICollection<GroupResponseDto>> GetGroups(Guid organizationId)
     {
         var groups = await _systemContext.Groups
+            .Include(x => x.Entries)
             .Where(x => x.OrganizationId.Equals(organizationId))
+            .Select(g => new GroupResponseDto()
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Description = g.Description,
+                CreationDate = g.CreationDate,
+                OrganizationId = g.OrganizationId,
+                EntriesCount = g.Entries != null ? g.Entries.Count : 0,
+            })
             .ToListAsync();
         
         return groups;
