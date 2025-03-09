@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from '@/features/auth/login/Login';
 import Register from '@/features/auth/register/Register';
 import Organization from '@/features/organization/OrganizationList';
+import Group from '@/features/group/GroupList';
 import User from '@/features/user/user';
 import ProcessPayment from '@/features/user/ProcessPayment';
 import PaymentSuccess from '@/features/user/PaymentSuccess';
@@ -82,6 +83,19 @@ export const AppRouter = () => {
               Component: (props) => (
                 <BaseLayout>
                   <Organization {...props} />
+                </BaseLayout>
+              ),
+            };
+          }
+        },
+        {
+          path: Paths.GROUP,
+          element: <PrivateRoute allowedRoles={['LicencedUser', 'OrganizationOwner']} />,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <Group {...props} />
                 </BaseLayout>
               ),
             };

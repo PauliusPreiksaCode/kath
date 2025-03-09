@@ -69,4 +69,6 @@ export const Endpoints = {
   REMOVE_FROM_ORGANIZATION: `/organizations/removeUser`,
   ORGANIZATION_USERS: `/organizations/organizationUsers`,
   NON_ORGANIZATION_USERS: `/organizations/nonOrganizationUsers`,
+  GROUPS: `/groups/allGroups`,
+  GROUP: `/groups`,
 };

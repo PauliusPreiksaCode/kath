@@ -1,26 +1,26 @@
 import { Dialog, DialogContent, DialogActions, Button, DialogTitle, useTheme } from '@mui/material';
-import { Organization } from "../OrganizationList";
-import { useDeleteOrganization } from '@/hooks/organization';
+import { GroupProps } from '../GroupList';
+import { useDeleteGroup } from '@/hooks/group';
 
-interface DeleteOrganizationCardProps {
+interface DeleteGroupCardProps {
     open: boolean;
     onClose: () => void;
-    organization: Organization;
+    group: GroupProps;
 }
 
-export default function DeleteOrganizationCard ({ open, onClose, organization } : DeleteOrganizationCardProps)  {
+export default function DeleteGroupCard({ open, onClose, group } : DeleteGroupCardProps) {
 
     const Theme = useTheme();
-    const deleteOrganization = useDeleteOrganization();
+    const deleteGroup = useDeleteGroup();
 
     return (
         <Dialog
             open={open}
             onClose={() => onClose()}
         >
-            <DialogTitle>Confirm Organization deletion</DialogTitle>
+            <DialogTitle>Confirm Group deletion</DialogTitle>
             <DialogContent>
-                Are you sure you want to delete organization: {organization?.name}?
+                Are you sure you want to delete group: {group?.name}?
             </DialogContent>
             <DialogActions>
                 <Button 
@@ -38,9 +38,11 @@ export default function DeleteOrganizationCard ({ open, onClose, organization } 
                     variant='contained'
                     onClick={ async () => { 
                         const request = {
-                            "id": organization.id,
+                            organizationId: group.organizationId,
+                            groupId: group.id,
                         };
-                        await deleteOrganization.mutateAsync(request);
+                        
+                        await deleteGroup.mutateAsync(request);
                         onClose(); 
                     }} 
                     sx={{
@@ -54,4 +56,4 @@ export default function DeleteOrganizationCard ({ open, onClose, organization } 
             </DialogActions>
         </Dialog>
     );
-}
+};

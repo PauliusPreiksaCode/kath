@@ -1,26 +1,22 @@
-import { Organization } from "../OrganizationList";
+import { GroupProps } from "../GroupList";
 import { Button, Typography, Card, CardContent, useTheme, CardActionArea, Grid } from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import { useContext, useState } from "react";
-import EditOrganizationCard from "./EditOrganizationCard";
-import DeleteOrganizationCard from "./DeleteOrganizationCard";
-import AddMemberCard from "./AddMemberCard";
-import RemoveMemberCard from "./RemoveMemberCard";
 import { UserContext } from "@/services/authProvider";
-import { OrganizationContext } from "@/services/organizationProvider";
 import { useNavigate } from "react-router-dom";
 import { Paths } from "@/types";
+import { OrganizationContext } from "@/services/organizationProvider";
+import DeleteGroupCard from "./DeleteGroupCard";
+import EditGroupCard from "./EditGroupCard";
 
-export default function OrganizationCard(organization : Organization) {
+export default function GroupCard(group : GroupProps) {
 
     const theme = useTheme();
     const userContext = useContext(UserContext);
-    const navigation = useNavigate();
     const organizationContext = useContext(OrganizationContext);
-    const [openEditOrganization, setOpenEditOrganization] = useState<boolean>(false);
-    const [openDeleteOrganization, setOpenDeleteOrganization] = useState<boolean>(false);
-    const [openAddMember, setOpenAddMember] = useState<boolean>(false);
-    const [openRemoveMember, setOpenRemoveMember] = useState<boolean>(false);
+    const navigation = useNavigate();
+    const [openEditGroup, setOpenEditGroup] = useState<boolean>(false);
+    const [openDeleteGroup, setOpenDeleteGroup] = useState<boolean>(false);
 
     const textStyle = {
         mt: '0.5rem',
@@ -40,14 +36,14 @@ export default function OrganizationCard(organization : Organization) {
         color: theme.palette.primary.contrastText,
     };
 
-    const initials = organization?.name
+    const initials = group?.name
         .split(' ')
         .map(word => word[0])
         .join('')
         .substring(0, 2)
         .toUpperCase();
 
-    const fullOwner = userContext?.roles?.includes('OrganizationOwner') && userContext.userId === organization.ownerId;
+        const fullOwner = userContext?.roles?.includes('OrganizationOwner') && userContext.userId === organizationContext.organizationOwner;
 
     return (
         <>
@@ -88,53 +84,34 @@ export default function OrganizationCard(organization : Organization) {
                                 display: 'flex',
                                 justifyContent: 'center',
                             }
-                        }>{organization.name}</Typography>
+                        }>{group.name}</Typography>
                     </Grid>
                     <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                        <Typography sx={textStyle}>Description: {organization.description}</Typography>
-                        <Typography sx={textStyle}>Members: {organization.membersCount}</Typography>
-                        <Typography sx={textStyle}>Groups: {organization.groups.length}</Typography>
-                        <Typography sx={textStyle}>Creation Date: {organization.creationDate.split('T')[0]}</Typography>
+                        <Typography sx={textStyle}>Description: {group.description}</Typography>
+                        <Typography sx={textStyle}>Entries: {group.entriesCount}</Typography>
+                        <Typography sx={textStyle}>Creation Date: {group.creationDate.split('T')[0]}</Typography>
                     </Grid>
                 </Grid>
             </CardContent>
             <CardActionArea sx={{ textAlign: 'center', cursor: 'auto' }} disableRipple={true}>
                 {fullOwner && 
                     <Grid container spacing={2} sx={{ mb: '1rem' }}>
-                        <Grid item xs={2}>
+                        <Grid item xs={6}>
                             <Button
                                 variant="contained"
                                 sx={buttonStyle}
-                                onClick={() => setOpenEditOrganization(true)}
+                                onClick={() => setOpenEditGroup(true)}
                             >
                                 Edit
                             </Button>
                         </Grid>
-                        <Grid item xs={2}>
+                        <Grid item xs={6}>
                             <Button
                                 variant="contained"
                                 sx={buttonStyle}
-                                onClick={() => setOpenDeleteOrganization(true)}
+                                onClick={() => setOpenDeleteGroup(true)}
                             >
                                 Delete
-                            </Button>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Button
-                                variant="contained"
-                                sx={buttonStyle}
-                                onClick={() => setOpenAddMember(true)}
-                            >
-                                Add Member
-                            </Button>
-                            </Grid>
-                        <Grid item xs={5}>
-                            <Button
-                                variant="contained"
-                                sx={buttonStyle}
-                                onClick={() => setOpenRemoveMember(true)}
-                            >
-                                Remove Member
                             </Button>
                         </Grid>
                     </Grid>
@@ -143,34 +120,23 @@ export default function OrganizationCard(organization : Organization) {
                     variant="contained"
                     sx={buttonStyle}
                     onClick={() => {
-                        organizationContext?.setOrganizationSessionId(organization.id);
-                        organizationContext?.setOrganizationSessionOwner(organization.ownerId);
-                        navigation(Paths.GROUP);
+                        organizationContext?.setGroupSessionId(group.id);
+                        navigation('/');
                     }}
                 >
-                    View Organization
+                    View Group
                 </Button>
             </CardActionArea>
         </Card>
-        <EditOrganizationCard 
-            open={openEditOrganization} 
-            onClose={() => setOpenEditOrganization(false)} 
-            organization={organization}
+        <EditGroupCard 
+            open={openEditGroup} 
+            onClose={() => setOpenEditGroup(false)} 
+            group={group}
         />
-        <DeleteOrganizationCard
-            open={openDeleteOrganization} 
-            onClose={() => setOpenDeleteOrganization(false)} 
-            organization={organization}
-        />
-        <AddMemberCard
-            open={openAddMember} 
-            onClose={() => setOpenAddMember(false)} 
-            organization={organization}
-        />
-        <RemoveMemberCard
-            open={openRemoveMember} 
-            onClose={() => setOpenRemoveMember(false)} 
-            organization={organization}
+        <DeleteGroupCard
+            open={openDeleteGroup} 
+            onClose={() => setOpenDeleteGroup(false)} 
+            group={group}
         />
         </>
     );

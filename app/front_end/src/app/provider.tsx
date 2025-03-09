@@ -2,6 +2,7 @@ import { SessionContextProvider, StatusContextProvider, ThemeContextProvider } f
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AuthenticationProvider from '@/services/authProvider' ;
 import PaymentProvider from '@/services/paymentProvider';
+import OrganizationProvider from '@/services/organizationProvider';
 import { CircularProgress } from '@mui/material';
 import React from 'react';
 import { ToastContainer } from "react-toastify";
@@ -53,9 +54,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
             <StatusContextProvider>
               <AuthenticationProvider>
                 <PaymentProvider>
-                <QueryClientProvider client={queryClient}>
-                  <ThemeContextProvider>{children}</ThemeContextProvider>
-                </QueryClientProvider>
+                  <OrganizationProvider>
+                    <QueryClientProvider client={queryClient}>
+                      <ThemeContextProvider>{children}</ThemeContextProvider>
+                    </QueryClientProvider>
+                  </OrganizationProvider>
                 </PaymentProvider>
               </AuthenticationProvider>
             </StatusContextProvider>

@@ -6,7 +6,7 @@ import CreateOrganizationCard from "./components/CreateOrganizationCard";
 import { UserContext } from "@/services/authProvider";
 
 export interface Organization {
-    id: number;
+    id: string;
     name: string;
     description: string;
     creationDate: string;

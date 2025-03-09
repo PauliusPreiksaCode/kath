@@ -184,8 +184,6 @@ export async function addUserToOrganization(organizationUser : any) {
       .then((res) => res.data)
       .catch((e) => {
         if(e !== undefined) {
-          console.log(e.response.data);
-          
           toastService.error(e.response.data);
         }
       });
@@ -216,6 +214,50 @@ export async function getOrganizationUsers(id : any) {
 export async function getNonOrganizationUsers(id : any) {
     return await instance
       .get(`${Endpoints.NON_ORGANIZATION_USERS}/${id}`)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+export async function getOrganizationGroups(id : any) {
+    return await instance
+      .get(`${Endpoints.GROUPS}/${id}`)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+export async function createGroup(group : any) {
+    return await instance
+      .post(Endpoints.GROUP, group)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+export async function updateGroup(group : any) {
+    return await instance
+      .put(Endpoints.GROUP, group)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+export async function deleteGroup(group : any) {
+    return await instance
+      .delete(Endpoints.GROUP, { data: group })
       .then((res) => res.data)
       .catch((e) => {
         if(e !== undefined) {

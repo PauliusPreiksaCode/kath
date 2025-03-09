@@ -4,9 +4,6 @@ import { Formik, Form } from 'formik';
 import { OrganizationTemplateValidation } from '@/validation/organizationTemplate';
 import { useCreateOrganization } from '@/hooks/organization';
 
-
-
-
 interface CreateOrganizationCardProps {
     open: boolean;
     onClose: () => void;
