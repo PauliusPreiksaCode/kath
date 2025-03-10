@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
+using organization_back_end.Helpers;
 using organization_back_end.RequestDtos.Entry;
 using organization_back_end.ResponseDto.Entries;
 using File = organization_back_end.Entities.File;
@@ -14,12 +16,14 @@ public class EntryService
     private readonly SystemContext _systemContext;
     private readonly UserManager<User> _userManager;
     private readonly FileService _fileService;
+    private readonly IHubContext<EntriesHub> _hubContext;
     
-    public EntryService(SystemContext systemContext, UserManager<User> userManager, FileService fileService)
+    public EntryService(SystemContext systemContext, UserManager<User> userManager, FileService fileService, IHubContext<EntriesHub> hubContext)
     {
         _systemContext = systemContext;
         _userManager = userManager;
         _fileService = fileService;
+        _hubContext = hubContext;
     }
 
     public async Task<ICollection<EntryResponseDto>> GetEntries(Guid organizationId, Guid groupId)
@@ -119,6 +123,7 @@ public class EntryService
         }
         
         await _systemContext.SaveChangesAsync();
+        await _hubContext.Clients.Group(group!.OrganizationId.ToString()).SendAsync("UpdateEntries", group!.OrganizationId.ToString());
     }
 
     public async Task UpdateEntry(UpdateEntryRequest request, string userId)
@@ -142,11 +147,11 @@ public class EntryService
 
         await _systemContext.SaveChangesAsync();
         
+        var group = await _systemContext.Groups
+            .FirstOrDefaultAsync(x => x.Id.Equals(request.GroupId));
+        
         if(request.File is not null)
         {
-            var group = await _systemContext.Groups
-                .FirstOrDefaultAsync(x => x.Id.Equals(request.GroupId));
-            
             var guid = Guid.NewGuid();
             var url = await _fileService.UploadFileAsync(request.File, request, guid);
             
@@ -167,6 +172,7 @@ public class EntryService
             await _systemContext.Files.AddAsync(file);
             await _systemContext.SaveChangesAsync();
         }
+        await _hubContext.Clients.Group(group!.OrganizationId.ToString()).SendAsync("UpdateEntries", group!.OrganizationId.ToString());
     }
     
     public async Task DeleteEntry(Guid entryId, Guid groupId, string userId)
@@ -208,6 +214,7 @@ public class EntryService
             _systemContext.Files.Remove(file);
             await _systemContext.SaveChangesAsync();
         }
+        await _hubContext.Clients.Group(group!.OrganizationId.ToString()).SendAsync("UpdateEntries", group!.OrganizationId.ToString());
     }
 
     public async Task DeleteFile(Guid entryId, Guid groupId, string userId)
@@ -241,6 +248,10 @@ public class EntryService
         
         _systemContext.Files.Remove(file);
         await _systemContext.SaveChangesAsync();
-
+        
+        var group = await _systemContext.Groups
+            .FirstOrDefaultAsync(x => x.Id.Equals(groupId));
+        
+        await _hubContext.Clients.Group(group!.OrganizationId.ToString()).SendAsync("UpdateEntries", group!.OrganizationId.ToString());
     }
 }

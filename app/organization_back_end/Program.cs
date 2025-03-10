@@ -2,12 +2,14 @@ using System.Text;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using organization_back_end;
 using organization_back_end.Auth;
 using organization_back_end.Auth.Model;
+using organization_back_end.Helpers;
 using organization_back_end.Services;
 using organization_back_end.Validation.Auth;
 using Stripe;
@@ -94,6 +96,7 @@ builder.Services.AddTransient<JwtService>();
 builder.Services.AddTransient<SessionService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddTransient<EmailService>();
+builder.Services.AddSignalR();
 builder.Services.AddTransient<FileService>();
 builder.Services.AddTransient<LicenceService>();
 builder.Services.AddTransient<UserService>();
@@ -139,6 +142,8 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
     endpoints.MapRazorPages();
 });
+
+app.MapHub<EntriesHub>("/entriesHub");
 
 using (var scope = app.Services.CreateScope())
 {
