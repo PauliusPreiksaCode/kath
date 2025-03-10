@@ -5,7 +5,7 @@ import { createEntry, deleteEntry, deleteFile, downloadFile, getEntries, updateE
 
 export const useGetEntries = (organizationId : string, groupId : string) => {
     return useQuery({
-        queryKey: ['entries'],
+        queryKey: ['entries', organizationId],
         queryFn: () => getEntries(organizationId, groupId),
         refetchOnWindowFocus: false,
         refetchInterval: false,

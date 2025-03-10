@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreateEntryCard from "./components/CreateEntryCard";
 import EntryCard from "./components/EntryCard";
+import entryUpdates from "@/hooks/entryUpdates";
 
 export interface EntryProps {
     id: string;
@@ -33,11 +34,13 @@ export default function Entry() {
     const getEntries = useGetEntries(organizationContext.organizationId, organizationContext.groupId);
     const navigate = useNavigate();
 
+    entryUpdates(organizationContext.organizationId);
+
     useEffect(() => {
         setEntries(getEntries.data || []);
     }, [getEntries.data]);
 
-    if(getEntries.isLoading || getEntries.isFetching) {
+    if(getEntries.isLoading && !getEntries.isFetching) {
         return <CircularProgress/>;
     }
 
