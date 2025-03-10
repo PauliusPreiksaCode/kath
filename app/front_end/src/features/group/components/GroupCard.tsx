@@ -51,11 +51,11 @@ export default function GroupCard(group : GroupProps) {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between', 
+                height: 'auto',
                 p: 2,
                 ":hover": {
                     boxShadow: '0 0 10px 0px rgba(0,0,0,0.2)',
                 },
-                maxHeight: fullOwner ? '20rem' : '15rem',
                 minHeight: fullOwner ? '20rem' : '15rem',
         }}>
             <CardContent>
@@ -121,7 +121,7 @@ export default function GroupCard(group : GroupProps) {
                     sx={buttonStyle}
                     onClick={() => {
                         organizationContext?.setGroupSessionId(group.id);
-                        navigation('/');
+                        navigation(Paths.ENTRIES);
                     }}
                 >
                     View Group

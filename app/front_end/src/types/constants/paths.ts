@@ -28,6 +28,7 @@ export const Paths = {
   REGISTER: '/register',
   ORGANIZATION: '/organization',
   GROUP: '/group',
+  ENTRIES: '/entries',
   USER: '/user',
   PROCESS_PAYMENT: '/process-payment',
   PAYMENT_SUCCESS: '/payment-success',

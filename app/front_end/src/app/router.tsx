@@ -6,6 +6,7 @@ import Login from '@/features/auth/login/Login';
 import Register from '@/features/auth/register/Register';
 import Organization from '@/features/organization/OrganizationList';
 import Group from '@/features/group/GroupList';
+import Entry from '@/features/entry/EntryList';
 import User from '@/features/user/user';
 import ProcessPayment from '@/features/user/ProcessPayment';
 import PaymentSuccess from '@/features/user/PaymentSuccess';
@@ -96,6 +97,19 @@ export const AppRouter = () => {
               Component: (props) => (
                 <BaseLayout>
                   <Group {...props} />
+                </BaseLayout>
+              ),
+            };
+          }
+        },
+        {
+          path: Paths.ENTRIES,
+          element: <PrivateRoute allowedRoles={['LicencedUser', 'OrganizationOwner']} />,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <Entry {...props} />
                 </BaseLayout>
               ),
             };

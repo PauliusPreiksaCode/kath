@@ -42,7 +42,8 @@ function Login(){
           };
 
           const response = await login(request);
-          toastService.success('Login successful');
+          if (response !== undefined)
+            toastService.success('Login successful');
           user?.login(response?.token);
 
           navigate('/');

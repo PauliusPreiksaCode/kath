@@ -1,38 +1,43 @@
-import { useGetGroups } from "@/hooks/group";
-import { UserContext } from "@/services/authProvider";
+import { useGetEntries } from "@/hooks/entry";
 import { OrganizationContext } from "@/services/organizationProvider";
 import { Paths } from "@/types";
 import { Box, Button, CircularProgress, Grid, Typography, useTheme } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CreateGroupCard from "./components/CreateGroupCard";
-import GroupCard from "./components/GroupCard";
+import CreateEntryCard from "./components/CreateEntryCard";
+import EntryCard from "./components/EntryCard";
 
-export interface GroupProps {
+export interface EntryProps {
     id: string;
     name: string;
-    description: string;
+    text: string;
     creationDate: string;
-    organizationId: string;
-    entriesCount: number;
-}
+    modifyDate: string;
+    fileId: string;
+    file: {
+        id: string;
+        name: string;
+        extension: number;
+        uploadDate: string;
+    }
+    fullName: string;
+    licencedUserId: string;
+};
 
+export default function Entry() {
 
-export default function Group() {
-
-    const [groups, setGroups] = useState<any>([]);
-    const [openCreateGroup, setOpenCreateGroup] = useState<boolean>(false);
-    const userContext = useContext(UserContext);
+    const [entries, setEntries] = useState<any>([]);
+    const [openCreateEntry, setOpenCreateEntry] = useState<boolean>(false);
     const organizationContext = useContext(OrganizationContext);
     const Theme = useTheme();
-    const getGroups = useGetGroups(organizationContext.organizationId);
+    const getEntries = useGetEntries(organizationContext.organizationId, organizationContext.groupId);
     const navigate = useNavigate();
 
     useEffect(() => {
-        setGroups(getGroups.data || []);
-    }, [getGroups.data]);
+        setEntries(getEntries.data || []);
+    }, [getEntries.data]);
 
-    if(getGroups.isLoading || getGroups.isFetching) {
+    if(getEntries.isLoading || getEntries.isFetching) {
         return <CircularProgress/>;
     }
 
@@ -60,8 +65,7 @@ export default function Group() {
                     }}
                     onClick={() => {
                         organizationContext.setGroupSessionId('');
-                        organizationContext.setOrganizationSessionId('');
-                        navigate(Paths.ORGANIZATION);
+                        navigate(Paths.GROUP);
                     }}
                 >
                     Back
@@ -73,34 +77,33 @@ export default function Group() {
                     flex: 1,
                     textAlign: 'center'
                 }}>
-                    Groups
+                    Entries
                 </Typography>
-                {userContext?.roles?.includes('OrganizationOwner') && 
-                    <Button
-                        variant="contained"
-                        sx={{
-                            width: '10rem',
-                            backgroundColor: Theme.palette.primary.main,
-                            color: Theme.palette.primary.contrastText,
-                            fontSize: '1rem',
-                        }}
-                        onClick={() => setOpenCreateGroup(true)}
-                    >
-                        Create Group
-                    </Button>
-                }
+                <Button
+                    variant="contained"
+                    sx={{
+                        width: '10rem',
+                        backgroundColor: Theme.palette.primary.main,
+                        color: Theme.palette.primary.contrastText,
+                        fontSize: '1rem',
+                    }}
+                    onClick={() => setOpenCreateEntry(true)}
+                >
+                    Create Entry
+                </Button>
             </Box>
             <Grid container spacing={2} sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
-                {groups.map((group: GroupProps) => (
-                    <Grid item xs={12} sm={12} md={8} lg={6} key={group.id}>
-                        <GroupCard {...group} />
+                {entries.map((entry: EntryProps) => (
+                    <Grid item xs={12} key={entry.id}>
+                        <EntryCard {...entry} />
                     </Grid>
                 ))}
             </Grid>
-            <CreateGroupCard
-                open={openCreateGroup}
-                onClose={() => setOpenCreateGroup(false)}
+            <CreateEntryCard
+                open={openCreateEntry}
+                onClose={() => setOpenCreateEntry(false)}
             />
         </Box>
+
     );
 };

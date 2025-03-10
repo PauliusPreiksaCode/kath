@@ -3,6 +3,7 @@ import authService from "./auth";
 import { Endpoints } from "@/types";
 import toastService from "./toast";
 import { AxiosError } from "axios";
+import { fileService } from "./fileService";
 
 export async function login(user : any) {
     return await instance
@@ -265,3 +266,105 @@ export async function deleteGroup(group : any) {
         }
       });
 }
+
+export async function getEntries(organizationId : string, groupId : string) {
+    return await instance
+      .get(`${Endpoints.ENTRIES}/${organizationId}/${groupId}`)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+export async function createEntry(entry : any) {
+  const originalContentType = instance.defaults.headers["Content-Type"];
+
+  try {
+      const response = await instance.post(Endpoints.ENTRY, entry, { headers: { "Content-Type": "multipart/form-data" } });
+      return response.data;
+  } catch (error) {
+      if (error !== undefined) {
+          const err = error as AxiosError;
+          const errorMessage =
+              typeof err.response?.data === "string"
+                  ? err.response.data
+                  : JSON.stringify(err.response?.data) || "An unexpected error occurred.";
+        toastService.error(errorMessage);
+      }
+  } 
+  finally {
+      instance.defaults.headers["Content-Type"] = originalContentType;
+  }
+}
+
+export async function updateEntry(entry : any) {
+  const originalContentType = instance.defaults.headers["Content-Type"];
+
+  try {
+      const response = await instance.put(Endpoints.ENTRY, entry, { headers: { "Content-Type": "multipart/form-data" } });
+      return response.data;
+  } catch (error) {
+      if (error !== undefined) {
+          const err = error as AxiosError;
+          const errorMessage =
+              typeof err.response?.data === "string"
+                  ? err.response.data
+                  : JSON.stringify(err.response?.data) || "An unexpected error occurred.";
+        toastService.error(errorMessage);
+      }
+  } 
+  finally {
+      instance.defaults.headers["Content-Type"] = originalContentType;
+  }
+}
+
+export async function deleteEntry(entry : any) {
+    return await instance
+      .delete(Endpoints.ENTRY, { data: entry })
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+export async function downloadFile(groupId : string, entryId : string) {
+  return await instance
+    .get(`${Endpoints.DOWNLOAD_FILE}/${groupId}/${entryId}`, { responseType: 'blob' })
+    .then((res) => {
+      const blob = new Blob([res.data], { type: res.headers['content-type'] });
+      const url = window.URL.createObjectURL(blob);
+      const filename = fileService.getFileNameFromHeaders(res.headers) || "downloaded-file";
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    })
+    .catch((e) => {
+      if(e !== undefined) {
+        toastService.error(e.response.data);
+      }
+    });
+}
+
+export async function deleteFile(groupId : string, entryId : string) {
+    return await instance
+      .delete(`${Endpoints.DELETE_FILE}/${groupId}/${entryId}`)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+
+
+

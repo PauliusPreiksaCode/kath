@@ -17,9 +17,6 @@ export default function RemoveMemberCard({ open, onClose, organization } : Remov
     const [confirmOpen, setConfirmOpen] = useState(false);
     const Theme = useTheme();
 
-
-    console.log("Organization: ", organization?.id);
-    
     const getOrganizationUsers = useGetOrganizationUsers(organization?.id);
     const removeUser = useRemoveUserFromOrganization();
 

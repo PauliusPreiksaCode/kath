@@ -72,7 +72,7 @@ export default function Organization() {
     
             <Grid container spacing={2} sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
                 {organizations.map((organization: Organization) => (
-                    <Grid item xs={12} sm={6} md={6} lg={6} key={organization.id}>
+                    <Grid item xs={12} sm={12} md={8} lg={6} key={organization.id}>
                         <OrganizationCard {...organization} />
                     </Grid>
                 ))}

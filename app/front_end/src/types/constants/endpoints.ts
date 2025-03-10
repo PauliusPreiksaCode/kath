@@ -71,4 +71,8 @@ export const Endpoints = {
   NON_ORGANIZATION_USERS: `/organizations/nonOrganizationUsers`,
   GROUPS: `/groups/allGroups`,
   GROUP: `/groups`,
+  ENTRIES: `/entries/allEntries`,
+  ENTRY: `/entries`,
+  DOWNLOAD_FILE: `/entries/download-file`,
+  DELETE_FILE: `/entries/delete-file`,
 };

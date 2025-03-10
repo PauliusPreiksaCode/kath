@@ -55,11 +55,11 @@ export default function OrganizationCard(organization : Organization) {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between', 
+                height: 'auto',
                 p: 2,
                 ":hover": {
                     boxShadow: '0 0 10px 0px rgba(0,0,0,0.2)',
                 },
-                maxHeight: fullOwner ? '20rem' : '15rem',
                 minHeight: fullOwner ? '20rem' : '15rem',
         }}>
             <CardContent>
@@ -152,26 +152,30 @@ export default function OrganizationCard(organization : Organization) {
                 </Button>
             </CardActionArea>
         </Card>
-        <EditOrganizationCard 
-            open={openEditOrganization} 
-            onClose={() => setOpenEditOrganization(false)} 
-            organization={organization}
-        />
-        <DeleteOrganizationCard
-            open={openDeleteOrganization} 
-            onClose={() => setOpenDeleteOrganization(false)} 
-            organization={organization}
-        />
-        <AddMemberCard
-            open={openAddMember} 
-            onClose={() => setOpenAddMember(false)} 
-            organization={organization}
-        />
-        <RemoveMemberCard
-            open={openRemoveMember} 
-            onClose={() => setOpenRemoveMember(false)} 
-            organization={organization}
-        />
+        {fullOwner && (
+            <>
+                <EditOrganizationCard 
+                    open={openEditOrganization} 
+                    onClose={() => setOpenEditOrganization(false)} 
+                    organization={organization}
+                />
+                <DeleteOrganizationCard
+                    open={openDeleteOrganization} 
+                    onClose={() => setOpenDeleteOrganization(false)} 
+                    organization={organization}
+                />
+                <AddMemberCard
+                    open={openAddMember} 
+                    onClose={() => setOpenAddMember(false)} 
+                    organization={organization}
+                />
+                <RemoveMemberCard
+                    open={openRemoveMember} 
+                    onClose={() => setOpenRemoveMember(false)} 
+                    organization={organization}
+                />
+            </>
+        )}
         </>
     );
 }
