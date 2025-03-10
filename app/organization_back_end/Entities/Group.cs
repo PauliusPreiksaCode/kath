@@ -18,10 +18,5 @@ public class Group
     [ForeignKey("OrganizationId")]
     [JsonIgnore]
     public Organization Organization { get; set; }
-    
-    public Guid? NoteBookId { get; set; }
-    [ForeignKey("NoteBookId")]
-    public NoteBook? NoteBook { get; set; }
-    
     public List<Entry>? Entries { get; set; }
 }

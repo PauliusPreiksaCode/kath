@@ -9,6 +9,7 @@ public class Entry
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
+    public required string Name { get; set; }
     public required string Text { get; set; }
     public DateTime CreationDate { get; set; }
     public DateTime ModifyDate { get; set; }

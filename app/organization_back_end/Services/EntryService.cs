@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.RequestDtos.Entry;
+using organization_back_end.ResponseDto.Entries;
 using File = organization_back_end.Entities.File;
 
 namespace organization_back_end.Services;
@@ -21,12 +22,26 @@ public class EntryService
         _fileService = fileService;
     }
 
-    public async Task<ICollection<Entry>> GetEntries(Guid organizationId, Guid groupId)
+    public async Task<ICollection<EntryResponseDto>> GetEntries(Guid organizationId, Guid groupId)
     {
         var entries = await _systemContext.Entries
             .Include(e => e.File)
             .Include(e => e.Group)
+            .Include(e => e.LicencedUser)
             .Where(e => e.GroupId.Equals(groupId) && e.Group.OrganizationId.Equals(organizationId))
+            .Select(e => new EntryResponseDto()
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Text = e.Text,
+                CreationDate = e.CreationDate,
+                ModifyDate = e.ModifyDate,
+                FileId = e.FileId,
+                File = e.File,
+                FullName = e.LicencedUser.Name + " " + e.LicencedUser.Surname,
+                LicencedUserId = e.LicencedUserId
+            })
+            .OrderByDescending(e => e.CreationDate)
             .ToListAsync();
         
         return entries;
@@ -61,6 +76,7 @@ public class EntryService
         var entry = new Entry()
         {
             Id = Guid.NewGuid(),
+            Name = request.EntryName,
             Text = request.Text,
             CreationDate = DateTime.Now,
             ModifyDate = DateTime.Now,
@@ -120,6 +136,7 @@ public class EntryService
             throw new Exception("You are not the creator of this entry");
         }
 
+        entry.Name = request.EntryName;
         entry.Text = request.Text;
         entry.ModifyDate = DateTime.Now;
 

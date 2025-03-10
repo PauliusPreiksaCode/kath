@@ -34,11 +34,16 @@ public class BlobService
         var stream = new MemoryStream();
         await blobClient.DownloadToAsync(stream);
         stream.Position = 0;
+        
+        var contentType = "application/octet-stream";
+        var fileName = Path.GetFileName(fullname);
 
-        return new FileStreamResult(stream, "application/octet-stream")
+        var result = new FileStreamResult(stream, contentType)
         {
-            FileDownloadName = fullname
+            FileDownloadName = fileName
         };
+        
+        return result;
     }
     
     public async Task DeleteFileAsync(string fullname)

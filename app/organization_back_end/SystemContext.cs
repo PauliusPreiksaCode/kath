@@ -22,8 +22,6 @@ public class SystemContext : IdentityDbContext<User>
     public virtual DbSet<Licence> Licences { get; set; }
     public virtual DbSet<LicenceLedgerEntry> LicenceLedgerEntries { get; set; }
     public virtual DbSet<LicencedUser> LicencedUsers { get; set; }
-    public virtual DbSet<NoteBook> NoteBooks { get; set; }
-    public virtual DbSet<NotebookEntry> NotebookEntries { get; set; }
     public virtual DbSet<Organization> Organizations { get; set; }
     public virtual DbSet<OrganizationOwner> OrganizationOwners { get; set; }
     public virtual DbSet<OrganizationUser> OrganizationUsers { get; set; }
@@ -68,24 +66,6 @@ public class SystemContext : IdentityDbContext<User>
             .HasOne(e => e.LicencedUser)
             .WithMany()
             .HasForeignKey(e => e.LicencedUserId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
-        builder.Entity<NotebookEntry>()
-            .HasOne(ne => ne.NoteBook)
-            .WithMany(n => n.Entries) 
-            .HasForeignKey(ne => ne.NoteBookId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<NoteBook>()
-            .HasMany(nb => nb.Entries)
-            .WithOne(ne => ne.NoteBook)
-            .HasForeignKey(ne => ne.NoteBookId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<Group>()
-            .HasOne(g => g.NoteBook)
-            .WithOne()
-            .HasForeignKey<Group>(g => g.NoteBookId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Group>()

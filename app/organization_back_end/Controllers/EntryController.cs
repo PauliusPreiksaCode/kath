@@ -149,7 +149,7 @@ public class EntryController : ControllerBase
             if(await _licenceService.HasRole(userId, Roles.OrganizationOwner) ||
                await _licenceService.HasRole(userId, Roles.LicencedUser))
             {
-                await _entryService.DeleteFile(groupId, entryId, userId);
+                await _entryService.DeleteFile(entryId, groupId, userId);
                 return Ok();
             }
 
