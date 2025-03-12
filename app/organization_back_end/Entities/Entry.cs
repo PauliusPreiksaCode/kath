@@ -29,4 +29,6 @@ public class Entry
     [ForeignKey("LicencedUserId")]
     [JsonIgnore]
     public LicencedUser LicencedUser { get; set; }
+    
+    public List<Guid>? LinkedEntries { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using organization_back_end.Auth.Model;
 using organization_back_end.Helpers;
@@ -164,6 +165,54 @@ public class EntryController : ControllerBase
                 "File not found" => NotFound("File not found"),
                 _ => StatusCode(400, "Cannot delete file")
             };
+        }
+    }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("linkingEntries/{organizationId:guid}")]
+    public async Task<IActionResult> GetLinkingEntries([FromRoute] Guid organizationId, [FromQuery] Guid? entryToExclude = null)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+
+            if(await _licenceService.HasRole(userId, Roles.OrganizationOwner) ||
+               await _licenceService.HasRole(userId, Roles.LicencedUser))
+            {
+                var entries = await _entryService.LinkingEntries(organizationId, entryToExclude);
+                return Ok(entries);
+            }
+
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, "Cannot get linking entries");
+        }
+    }
+    
+    [HttpGet]
+    [Authorize]
+    [Route("graphEntries/{organizationId:guid}")]
+    public async Task<IActionResult> GetGraphEntries([FromRoute] Guid organizationId)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+
+            if(await _licenceService.HasRole(userId, Roles.OrganizationOwner) ||
+               await _licenceService.HasRole(userId, Roles.LicencedUser))
+            {
+                var entries = await _entryService.GetGraphEntities(organizationId);
+                return Ok(entries);
+            }
+
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, "Cannot get graph entries");
         }
     }
     

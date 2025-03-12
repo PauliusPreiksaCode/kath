@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -86,8 +87,14 @@ public class EntryService
             ModifyDate = DateTime.Now,
             GroupId = request.GroupId,
             Group = group,
-            LicencedUserId = licencedUserId
+            LicencedUserId = licencedUserId,
         };
+
+        if (request.LinkedEntries is not null)
+        {
+            entry.LinkedEntries ??= new List<Guid>();
+            entry.LinkedEntries.AddRange(request.LinkedEntries!);
+        }
         
         var user = await _userManager.FindByIdAsync(licencedUserId);
         var licencedUser = user as LicencedUser;
@@ -140,10 +147,16 @@ public class EntryService
         {
             throw new Exception("You are not the creator of this entry");
         }
+        
+        await UpdateAllLinks(entry.Id, entry.Name, request.EntryName);
 
         entry.Name = request.EntryName;
         entry.Text = request.Text;
         entry.ModifyDate = DateTime.Now;
+        
+        
+        var linkedEntries = request.LinkedEntries ?? new List<Guid>();
+        entry.LinkedEntries = linkedEntries;
 
         await _systemContext.SaveChangesAsync();
         
@@ -186,6 +199,8 @@ public class EntryService
             throw new Exception("Entry not found");
         }
         
+        await DeleteAllLinks(entryId);
+        
         var group = await _systemContext.Groups
             .FirstOrDefaultAsync(x => x.Id.Equals(groupId));
         
@@ -215,6 +230,34 @@ public class EntryService
             await _systemContext.SaveChangesAsync();
         }
         await _hubContext.Clients.Group(group!.OrganizationId.ToString()).SendAsync("UpdateEntries", group!.OrganizationId.ToString());
+    }
+    
+    private async Task DeleteAllLinks(Guid entryId)
+    {
+        var entries = await _systemContext.Entries
+            .Where(e => e.LinkedEntries != null && e.LinkedEntries!.Contains(entryId))
+            .ToListAsync();
+        
+        foreach (var entry in entries)
+        {
+            entry.LinkedEntries!.Remove(entryId);
+        }
+        
+        await _systemContext.SaveChangesAsync();
+    }
+    
+    private async Task UpdateAllLinks(Guid entryId, String oldName, String newName)
+    {
+        var entries = await _systemContext.Entries
+            .Where(e => e.LinkedEntries != null && e.LinkedEntries!.Contains(entryId))
+            .ToListAsync();
+
+        foreach (var entry in entries)
+        {
+            entry.Text = Regex.Replace(entry.Text, $@"\[\[{oldName}\]\]", $"[[{newName}]]");
+        }
+        
+        await _systemContext.SaveChangesAsync();
     }
 
     public async Task DeleteFile(Guid entryId, Guid groupId, string userId)
@@ -253,5 +296,61 @@ public class EntryService
             .FirstOrDefaultAsync(x => x.Id.Equals(groupId));
         
         await _hubContext.Clients.Group(group!.OrganizationId.ToString()).SendAsync("UpdateEntries", group!.OrganizationId.ToString());
+    }
+
+    public async Task<IEnumerable<LinkingEntryResponseDto>> LinkingEntries(Guid organizationId, Guid? entryToExclude = null)
+    {
+        var groupIds = await _systemContext.Groups
+            .Where(g => g.OrganizationId.Equals(organizationId))
+            .Select(g => g.Id)
+            .ToListAsync();
+        
+        if (groupIds.Count == 0)
+        {
+            return Enumerable.Empty<LinkingEntryResponseDto>();
+        }
+        
+        var entriesQuery = _systemContext.Entries
+            .Where(e => groupIds.Contains(e.GroupId));
+        
+        if (entryToExclude.HasValue)
+        {
+            entriesQuery = entriesQuery.Where(e => !e.Id.Equals(entryToExclude.Value));
+        }
+        
+        var entries = await entriesQuery
+            .Include(entry => entry.LicencedUser)
+            .ToListAsync();
+
+        var linkingEntries = entries
+            .Select(e => new LinkingEntryResponseDto()
+            {
+                Id = e.Id,
+                Name = e.Name,
+                FullName = e.LicencedUser.Name + " " + e.LicencedUser.Surname,
+                CreationDate = e.CreationDate
+            })
+            .ToList();
+
+        return linkingEntries;
+    }
+
+    public async Task<IEnumerable<GraphEntitiesResponse>> GetGraphEntities(Guid organizationId)
+    {
+        var entries = await _systemContext.Entries
+            .Include(e => e.Group)
+            .Where(e => e.Group.OrganizationId.Equals(organizationId))
+            .ToListAsync();
+        
+        var graphEntities = entries
+            .Select(e => new GraphEntitiesResponse()
+            {
+                Id = e.Id,
+                Name = e.Name,
+                LinkedEntries = e.LinkedEntries ?? new List<Guid>(),
+            })
+            .ToList();
+        
+        return graphEntities;
     }
 }

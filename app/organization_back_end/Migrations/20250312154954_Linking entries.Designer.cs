@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using organization_back_end;
 
@@ -11,9 +12,11 @@ using organization_back_end;
 namespace organization_back_end.Migrations
 {
     [DbContext(typeof(SystemContext))]
-    partial class SystemContextModelSnapshot : ModelSnapshot
+    [Migration("20250312154954_Linking entries")]
+    partial class Linkingentries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,9 +258,6 @@ namespace organization_back_end.Migrations
                     b.Property<string>("LicencedUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LinkedEntries")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifyDate")
                         .HasColumnType("datetime2");
@@ -587,6 +587,12 @@ namespace organization_back_end.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("organization_back_end.Entities.Entry", null)
+                        .WithMany("LinkedEntries")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("organization_back_end.Entities.LicencedUser", "LicencedUser")
                         .WithMany("Entries")
                         .HasForeignKey("LicencedUserId")
@@ -676,6 +682,11 @@ namespace organization_back_end.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("organization_back_end.Entities.Entry", b =>
+                {
+                    b.Navigation("LinkedEntries");
                 });
 
             modelBuilder.Entity("organization_back_end.Entities.File", b =>
