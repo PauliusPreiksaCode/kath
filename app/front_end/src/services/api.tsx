@@ -278,6 +278,33 @@ export async function getEntries(organizationId : string, groupId : string) {
       });
 }
 
+export async function getLinkingEntries(organizationId : string, entryToExclude : string) {
+    let path = `${Endpoints.LINKING_ENTRIES}/${organizationId}`;
+    if(entryToExclude !== "") {
+      path += `?entryToExclude=${entryToExclude}`;
+    }
+
+    return await instance
+      .get(path)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
+export async function getGraphEntries(organizationId : string) {
+    return await instance
+      .get(`${Endpoints.GRAPH_ENTRIES}/${organizationId}`)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
 export async function createEntry(entry : any) {
   const originalContentType = instance.defaults.headers["Content-Type"];
 

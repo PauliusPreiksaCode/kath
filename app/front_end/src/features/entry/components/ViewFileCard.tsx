@@ -18,8 +18,8 @@ interface ViewFileCardProps {
 export default function ViewFileCard({ open, onClose, entry, fullOwner }: ViewFileCardProps) {
 
     const Theme = useTheme();
-    const dowloadFile = useDownloadFile();
     const organizationContext = useContext(OrganizationContext);
+    const dowloadFile = useDownloadFile(organizationContext.organizationId);
     const [ openDeleteFile, setOpenDeleteFile ] = useState(false);
 
     const textStyle = {

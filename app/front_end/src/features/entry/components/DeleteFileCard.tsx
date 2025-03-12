@@ -13,8 +13,8 @@ interface DeleteFileCardProps {
 export default function DeleteFileCard({ open, onClose, entry } : DeleteFileCardProps) {
 
     const Theme = useTheme();
-    const deleteFile = useDeleteFile();
     const organizationContext = useContext(OrganizationContext);
+    const deleteFile = useDeleteFile(organizationContext.organizationId);
 
     return (
         <Dialog

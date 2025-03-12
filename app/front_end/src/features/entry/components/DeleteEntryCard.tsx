@@ -13,8 +13,8 @@ interface DeleteEntryCardProps {
 export default function DeleteEntryCard({ open, onClose, entry } : DeleteEntryCardProps) {
 
     const Theme = useTheme();
-    const deleteEntry = useDeleteEntry();
     const organizationContext = useContext(OrganizationContext);
+    const deleteEntry = useDeleteEntry(organizationContext.organizationId);
 
     return (
         <Dialog

@@ -12,6 +12,7 @@ import ProcessPayment from '@/features/user/ProcessPayment';
 import PaymentSuccess from '@/features/user/PaymentSuccess';
 import PaymentFailed from '@/features/user/PaymentFailed';
 import PrivateRoute from './routes/PrivateRoute';
+import Graph from '@/features/graph/Graph';
 
 /**
  * `AppRouter` component sets up the routing for the application using `createBrowserRouter` from `react-router-dom`.
@@ -114,6 +115,19 @@ export const AppRouter = () => {
               ),
             };
           }
+        },
+        {
+          path: Paths.GRAPH,
+          element: <PrivateRoute allowedRoles={['LicencedUser', 'OrganizationOwner']} />,
+          lazy: async () => {
+            return {
+              Component: (props) => (
+                <BaseLayout>
+                  <Graph {...props} />
+                </BaseLayout>
+              ),
+            };
+          },
         },
         {
           path: Paths.USER,

@@ -23,6 +23,7 @@ export interface EntryProps {
     }
     fullName: string;
     licencedUserId: string;
+    linkedEntries: string[];
 };
 
 export default function Entry() {
@@ -67,7 +68,7 @@ export default function Entry() {
                         fontSize: '1rem',
                     }}
                     onClick={() => {
-                        organizationContext.setGroupSessionId('');
+                        organizationContext.clearGroupSessionId();
                         navigate(Paths.GROUP);
                     }}
                 >
@@ -89,6 +90,19 @@ export default function Entry() {
                         backgroundColor: Theme.palette.primary.main,
                         color: Theme.palette.primary.contrastText,
                         fontSize: '1rem',
+                    }}
+                    onClick={() => navigate(Paths.GRAPH)}
+                >
+                    Graph
+                </Button>
+                <Button
+                    variant="contained"
+                    sx={{
+                        width: '10rem',
+                        backgroundColor: Theme.palette.primary.main,
+                        color: Theme.palette.primary.contrastText,
+                        fontSize: '1rem',
+                        ml: '1rem',
                     }}
                     onClick={() => setOpenCreateEntry(true)}
                 >

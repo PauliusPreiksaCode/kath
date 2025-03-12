@@ -29,6 +29,7 @@ export const Paths = {
   ORGANIZATION: '/organization',
   GROUP: '/group',
   ENTRIES: '/entries',
+  GRAPH: '/graph',
   USER: '/user',
   PROCESS_PAYMENT: '/process-payment',
   PAYMENT_SUCCESS: '/payment-success',

@@ -23,7 +23,8 @@ export default function entryUpdates(organizationId: string) {
 
         newConnection.on("UpdateEntries", (updateOrgId: string) => {
             if (updateOrgId === organizationId) {
-                queryClient.invalidateQueries({ queryKey: ["entries", organizationId] });
+                queryClient.invalidateQueries({ queryKey: ['entries', organizationId] });
+                queryClient.invalidateQueries({ queryKey: ['linkingEntries'] });
             }
         });
 

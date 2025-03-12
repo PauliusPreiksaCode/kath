@@ -75,4 +75,6 @@ export const Endpoints = {
   ENTRY: `/entries`,
   DOWNLOAD_FILE: `/entries/download-file`,
   DELETE_FILE: `/entries/delete-file`,
+  LINKING_ENTRIES: `/entries/linkingEntries`,
+  GRAPH_ENTRIES: `/entries/graphEntries`,
 };

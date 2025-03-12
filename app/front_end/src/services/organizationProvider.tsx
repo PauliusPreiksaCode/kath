@@ -11,6 +11,8 @@ interface OrganizationContextProps {
     setGroupSessionId: (groupId: string) => void;
     setOrganizationSessionId: (organizationId: string) => void;
     setOrganizationSessionOwner: (organizationOwner: string) => void;
+    clearGroupSessionId: () => void;
+    clearOrganizationSessionId: () => void;
 }
 
 export const OrganizationContext = createContext<OrganizationContextProps>({
@@ -20,24 +22,39 @@ export const OrganizationContext = createContext<OrganizationContextProps>({
     setGroupSessionId: () => {},
     setOrganizationSessionId: () => {},
     setOrganizationSessionOwner: () => {},
+    clearGroupSessionId: () => {},
+    clearOrganizationSessionId: () => {},
 });
 
 const OrganizationProvider = ({ children } : Props) => {
 
-    const [groupId, setGroupId] = useState('');
-    const [organizationId, setOrganizationId] = useState('');
-    const [organizationOwner, setOrganizationOwner] = useState('');
+    const [groupId, setGroupId] = useState(() => localStorage.getItem("groupId") || '');
+    const [organizationId, setOrganizationId] = useState(() => localStorage.getItem("organizationId") || '');
+    const [organizationOwner, setOrganizationOwner] = useState(() => localStorage.getItem("organizationOwner") || '');
 
     const setGroupSessionId = (groupId: string) => {
         setGroupId(groupId);
+        localStorage.setItem('groupId', groupId);
     };
 
     const setOrganizationSessionId = (organizationId: string) => {
         setOrganizationId(organizationId);
+        localStorage.setItem('organizationId', organizationId);
     }
 
     const setOrganizationSessionOwner = (organizationOwner: string) => {
         setOrganizationOwner(organizationOwner);
+        localStorage.setItem('organizationOwner', organizationOwner);
+    };
+
+    const clearGroupSessionId = () => {
+        setGroupId('');
+        localStorage.removeItem('groupId');
+    };
+
+    const clearOrganizationSessionId = () => {
+        setOrganizationId('');
+        localStorage.removeItem('organizationId');
     };
 
     const OrganizationContextValues = {
@@ -47,6 +64,8 @@ const OrganizationProvider = ({ children } : Props) => {
         setGroupSessionId,
         setOrganizationSessionId,
         setOrganizationSessionOwner,
+        clearGroupSessionId,
+        clearOrganizationSessionId,
     };
 
     return (

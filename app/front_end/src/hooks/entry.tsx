@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toastService from '@/services/toast';
-import { createEntry, deleteEntry, deleteFile, downloadFile, getEntries, updateEntry } from '@/services/api';
+import { createEntry, deleteEntry, deleteFile, downloadFile, getEntries, updateEntry, getLinkingEntries, getGraphEntries } from '@/services/api';
 
 
 export const useGetEntries = (organizationId : string, groupId : string) => {
@@ -12,7 +12,25 @@ export const useGetEntries = (organizationId : string, groupId : string) => {
     });
 };
 
-export const useDownloadFile = () => {
+export const useGetLinkingEntries = (organizationId : string, entryToExclude : string) => {
+    return useQuery({
+        queryKey: ['linkingEntries'],
+        queryFn: () => getLinkingEntries(organizationId, entryToExclude),
+        refetchOnWindowFocus: false,
+        refetchInterval: false,
+    });
+}
+
+export const useGetGraphEntries = (organizationId : string) => {
+    return useQuery({
+        queryKey: ['graphEntries', organizationId],
+        queryFn: () => getGraphEntries(organizationId),
+        refetchOnWindowFocus: false,
+        refetchInterval: false,
+    });
+}
+
+export const useDownloadFile = (organizationId : string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -20,12 +38,12 @@ export const useDownloadFile = () => {
         onSuccess: (e) => {
             if (e !== undefined) 
                 toastService.success("File downloaded successfully");
-            queryClient.invalidateQueries({ queryKey: ['entries'] });
+            queryClient.invalidateQueries({ queryKey: ['entries', organizationId] });
         },
     });
 };
 
-export const useCreateEntry = () => {
+export const useCreateEntry = (organizationId : string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -33,12 +51,14 @@ export const useCreateEntry = () => {
         onSuccess: (e) => {
             if (e !== undefined) 
                 toastService.success("Entry created successfully");
-            queryClient.invalidateQueries({ queryKey: ['entries'] });
+            queryClient.invalidateQueries({ queryKey: ['entries', organizationId] });
+            queryClient.invalidateQueries({ queryKey: ['linkingEntries'] });
+
         },
     });
 }
 
-export const useUpdateEntry = () => {
+export const useUpdateEntry = (organizationId : string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -46,12 +66,13 @@ export const useUpdateEntry = () => {
         onSuccess: (e) => {
             if (e !== undefined) 
                 toastService.success("Entry updated successfully");
-            queryClient.invalidateQueries({ queryKey: ['entries'] });
+            queryClient.invalidateQueries({ queryKey: ['entries', organizationId] });
+            queryClient.invalidateQueries({ queryKey: ['linkingEntries'] });
         },
     });
 }
 
-export const useDeleteEntry = () => {
+export const useDeleteEntry = (organizationId : string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -59,12 +80,13 @@ export const useDeleteEntry = () => {
         onSuccess: (e) => {
             if (e !== undefined) 
                 toastService.success("Entry deleted successfully");
-            queryClient.invalidateQueries({ queryKey: ['entries'] });
+            queryClient.invalidateQueries({ queryKey: ['entries', organizationId] });
+            queryClient.invalidateQueries({ queryKey: ['linkingEntries'] });
         },
     });
 }
 
-export const useDeleteFile = () => {
+export const useDeleteFile = (organizationId : string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -72,7 +94,7 @@ export const useDeleteFile = () => {
         onSuccess: (e) => {
             if (e !== undefined) 
                 toastService.success("File deleted successfully");
-            queryClient.invalidateQueries({ queryKey: ['entries'] });
+            queryClient.invalidateQueries({ queryKey: ['entries', organizationId] });
         },
     });
 }

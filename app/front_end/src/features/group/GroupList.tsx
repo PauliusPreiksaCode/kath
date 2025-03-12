@@ -59,8 +59,8 @@ export default function Group() {
                         fontSize: '1rem',
                     }}
                     onClick={() => {
-                        organizationContext.setGroupSessionId('');
-                        organizationContext.setOrganizationSessionId('');
+                        organizationContext.clearGroupSessionId();
+                        organizationContext.clearOrganizationSessionId();
                         navigate(Paths.ORGANIZATION);
                     }}
                 >
