@@ -353,4 +353,44 @@ public class EntryService
         
         return graphEntities;
     }
+    
+    public async Task<EntryViewResponseDto> GetEntry(Guid entryId, Guid organizationId)
+    {
+        var entry = await _systemContext.Entries
+            .Include(e => e.File)
+            .Include(e => e.Group)
+            .ThenInclude(g => g.Organization)
+            .Include(e => e.LicencedUser)
+            .FirstOrDefaultAsync(e => e.Id.Equals(entryId) && e.Group.OrganizationId.Equals(organizationId));
+
+        if (entry is null)
+        {
+            throw new Exception("Entry not found");
+        }
+        
+        var linkedEntries = await _systemContext.Entries
+            .Where(e => entry.LinkedEntries != null && entry.LinkedEntries.Contains(e.Id))
+            .Select(e => new {e.Id, e.Name})
+            .ToListAsync();
+
+        var entryResponse = new EntryViewResponseDto()
+        {
+            Id = entry.Id,
+            Name = entry.Name,
+            Text = entry.Text,
+            CreationDate = entry.CreationDate,
+            ModifyDate = entry.ModifyDate,
+            FileId = entry.FileId,
+            File = entry.File,
+            FullName = $"{entry.LicencedUser.Name} {entry.LicencedUser.Surname}",
+            LicencedUserId = entry.LicencedUserId,
+            LinkedEntries = linkedEntries.Select(e => new LinkedEntryResponseDto()
+            {
+                Id = e.Id,
+                Name = e.Name
+            }).ToList()
+        };
+
+        return entryResponse;
+    }
 }

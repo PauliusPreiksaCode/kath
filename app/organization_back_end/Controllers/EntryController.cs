@@ -216,4 +216,28 @@ public class EntryController : ControllerBase
         }
     }
     
+    [HttpGet]
+    [Authorize]
+    [Route("{organizationId:guid}/{entryId:guid}")]
+    public async Task<IActionResult> GetEntry([FromRoute] Guid organizationId, [FromRoute] Guid entryId)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+
+            if(await _licenceService.HasRole(userId, Roles.OrganizationOwner) ||
+               await _licenceService.HasRole(userId, Roles.LicencedUser))
+            {
+                var entry = await _entryService.GetEntry(entryId, organizationId);
+                return Ok(entry);
+            }
+
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, "Cannot get entry");
+        }
+    }
+    
 }
