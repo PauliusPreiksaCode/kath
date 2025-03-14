@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toastService from '@/services/toast';
-import { createEntry, deleteEntry, deleteFile, downloadFile, getEntries, updateEntry, getLinkingEntries, getGraphEntries } from '@/services/api';
+import { createEntry, deleteEntry, deleteFile, downloadFile, getEntries, updateEntry, getLinkingEntries, getGraphEntries, getEntry } from '@/services/api';
 
 
 export const useGetEntries = (organizationId : string, groupId : string) => {
@@ -25,6 +25,15 @@ export const useGetGraphEntries = (organizationId : string) => {
     return useQuery({
         queryKey: ['graphEntries', organizationId],
         queryFn: () => getGraphEntries(organizationId),
+        refetchOnWindowFocus: false,
+        refetchInterval: false,
+    });
+}
+
+export const useGetEntry = (organizationId : string, entryId : string) => {
+    return useQuery({
+        queryKey: ['entry', organizationId, entryId],
+        queryFn: () => getEntry(organizationId, entryId),
         refetchOnWindowFocus: false,
         refetchInterval: false,
     });

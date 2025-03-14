@@ -1,10 +1,11 @@
 import { Box, Button, CircularProgress, Grid, Typography, useTheme } from "@mui/material";
 import { useGetGraphEntries } from "@/hooks/entry";
 import { OrganizationContext } from "@/services/organizationProvider";
-import { useContext, useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { Paths } from "@/types";
 import { useNavigate } from "react-router-dom";
 import ForceGraph2D from 'react-force-graph-2d';
+import ViewEntryCard from "../entry/components/ViewEntryCard";
 
 export interface GraphProps {
     id: string;
@@ -16,6 +17,7 @@ export default function Graph() {
 
     const [graphEntries, setGraphEntries] = useState<any>([]);
     const [selectedNode, setSelectedNode] = useState<GraphProps | null>(null);
+    const [openViewEntry, setOpenViewEntry] = useState<boolean>(false);
     const organizationContext = useContext(OrganizationContext);
     const Theme = useTheme();
     const navigate = useNavigate();
@@ -52,10 +54,12 @@ export default function Graph() {
 
     const handleNodeClick = useCallback((node : GraphProps) => {
         setSelectedNode(node);
+        setOpenViewEntry(true);
     }, []);
 
 
     return (
+        <>
         <Box sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -152,5 +156,12 @@ export default function Graph() {
                 />
             </Grid>
         </Box>
+        {selectedNode && 
+        <ViewEntryCard
+            open={openViewEntry}
+            onClose={() => setOpenViewEntry(false)}
+            entryId={selectedNode.id}
+        />}
+        </>
     );
 }

@@ -278,6 +278,17 @@ export async function getEntries(organizationId : string, groupId : string) {
       });
 }
 
+export async function getEntry(organizationId : string, entryId : string) {
+    return await instance
+      .get(`${Endpoints.ENTRY}/${organizationId}/${entryId}`)
+      .then((res) => res.data)
+      .catch((e) => {
+        if(e !== undefined) {
+          toastService.error(e.response.data);
+        }
+      });
+}
+
 export async function getLinkingEntries(organizationId : string, entryToExclude : string) {
     let path = `${Endpoints.LINKING_ENTRIES}/${organizationId}`;
     if(entryToExclude !== "") {

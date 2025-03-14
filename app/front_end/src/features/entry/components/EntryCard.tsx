@@ -1,11 +1,15 @@
 import { EntryProps } from "../EntryList";
-import { Button, Typography, Card, CardContent, useTheme, Grid, IconButton } from "@mui/material";
-import { useContext, useState } from "react";
+import { Button, Typography, Card, CardContent, useTheme, Grid, IconButton, alpha, Box } from "@mui/material";
+import { forwardRef, useContext, useState } from "react";
 import { UserContext } from "@/services/authProvider";
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteEntryCard from "./DeleteEntryCard";
 import UpdateEntryCard from "./UpdateEntryCard";
 import ViewFileCard from "./ViewFileCard";
+import ReactMarkdown from 'react-markdown';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/github.css';
+import { CodeProps } from "./CreateEntryCard";
 
 export default function EntryCard(entry : EntryProps) {
 
@@ -61,15 +65,49 @@ export default function EntryCard(entry : EntryProps) {
                             <Typography sx={textStyle}>{entry.modifyDate.split('T')[0]}</Typography>
                         </Grid>
                         <Grid item xs={12} >
-                            <Typography sx={
-                                {
-                                    mt: '0.5rem',
-                                    fontSize: '1rem',
-                                    color: theme.palette.primary.main,
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                }
-                            }>{entry.text}</Typography>
+                            <ReactMarkdown
+                                rehypePlugins={[rehypeHighlight]}
+                                components={{
+                                    h1: forwardRef(({ node, ...props}, ref) =>  (<Typography variant="h4"  gutterBottom {...props} sx={{ fontWeight: 'bold' }} ref={ref} />)),
+                                    h2: forwardRef(({ node, ...props}, ref) =>  (<Typography variant="h5"  gutterBottom {...props} sx={{ fontWeight: 'bold' }} ref={ref} />)),
+                                    h3: forwardRef(({ node, ...props}, ref) =>  (<Typography variant="h6"  gutterBottom {...props} sx={{ fontWeight: 'bold' }} ref={ref} />)),
+                                    p: forwardRef(({ node, ...props}, ref) => <Typography paragraph {...props}  ref={ref} />),
+                                    a: ({ node, ...props }) => <a {...props} style={{ color: theme.palette.primary.main }} />,
+                                    ul: ({ node, ...props }) => <ul {...props} style={{ paddingLeft: '20px' }} />,
+                                    ol: ({ node, ...props }) => <ol {...props} style={{ paddingLeft: '20px' }} />,
+                                    code: ({ node, inline, className, children, ...props } : CodeProps) => {
+                                        const match = /language-(\w+)/.exec(className || '');
+                                        return !inline && match ? (
+                                            <Box
+                                                component="pre"
+                                                sx={{
+                                                    p: 2,
+                                                    borderRadius: 1,
+                                                    bgcolor: alpha(theme.palette.background.default, 0.6),
+                                                    overflow: 'auto',
+                                                    fontFamily: 'monospace',
+                                                    fontSize: '0.875rem',
+                                                }}
+                                            >
+                                                <code className={className} {...props}>
+                                                    {children}
+                                                </code>
+                                            </Box>
+                                        ) : (
+                                            <code className={className} {...props} style={{ 
+                                                backgroundColor: alpha(theme.palette.background.default, 0.6),
+                                                padding: '2px 4px',
+                                                borderRadius: '3px',
+                                                fontFamily: 'monospace'
+                                            }}>
+                                                {children}
+                                            </code>
+                                        );
+                                    },
+                                }}
+                            >
+                                {entry.text}
+                            </ReactMarkdown>
                         </Grid>
                     </Grid>
                     <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
