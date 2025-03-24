@@ -199,15 +199,15 @@ public class EntryService
             throw new Exception("Entry not found");
         }
         
-        await DeleteAllLinks(entryId);
-        
-        var group = await _systemContext.Groups
-            .FirstOrDefaultAsync(x => x.Id.Equals(groupId));
-        
         if (!entry.LicencedUserId.Equals(userId))
         {
             throw new Exception("You are not the creator of this entry");
         }
+        
+        await DeleteAllLinks(entryId);
+        
+        var group = await _systemContext.Groups
+            .FirstOrDefaultAsync(x => x.Id.Equals(groupId));
         
         var user = await _userManager.FindByIdAsync(userId);
         (user as LicencedUser)!.Entries!.Remove(entry);
