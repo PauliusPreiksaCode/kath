@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using organization_back_end.Auth.Model;
 using organization_back_end.Enums;
 using organization_back_end.Helpers;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Licences;
 using organization_back_end.Services;
 using Stripe.Checkout;
@@ -13,11 +14,11 @@ namespace organization_back_end.Controllers;
 [Route("checkout")]
 public class CheckoutController : ControllerBase
 {
-    private readonly LicenceService _licenceService;
+    private readonly ILicenceService _licenceService;
     private readonly UserManager<User> _userManager;
     
     
-    public CheckoutController(LicenceService licenceService, UserManager<User> userManager)
+    public CheckoutController(ILicenceService licenceService, UserManager<User> userManager)
     {
         _licenceService = licenceService;
         _userManager = userManager;

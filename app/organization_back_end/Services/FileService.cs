@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Entry;
 
 namespace organization_back_end.Services;
 
-public class FileService
+public class FileService : IFileService
 {
-    private readonly BlobService _blobService;
+    private readonly IBlobService _blobService;
     private readonly List<string> _allowedExtensions = new List<string> {".jpg", ".jpeg", ".png", ".pdf", ".docx", ".xlsx", ".pptx", ".txt"};
 
-    public FileService(BlobService blobService)
+    public FileService(IBlobService blobService)
     {
         _blobService = blobService;
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using organization_back_end.Auth.Model;
 using organization_back_end.Helpers;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Entry;
 using organization_back_end.Services;
 
@@ -11,11 +12,11 @@ namespace organization_back_end.Controllers;
 [Route("entries")]
 public class EntryController : ControllerBase
 {
-    private readonly EntryService _entryService;
-    private readonly LicenceService _licenceService;
+    private readonly IEntryService _entryService;
+    private readonly ILicenceService _licenceService;
 
 
-    public EntryController(EntryService entryService, LicenceService licenceService)
+    public EntryController(IEntryService entryService, ILicenceService licenceService)
     {
         _entryService = entryService;
         _licenceService = licenceService;

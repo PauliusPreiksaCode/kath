@@ -30,6 +30,12 @@ public class SessionService
     public async Task ExtendSessionAsync(Guid sessionId, string refreshToken, DateTime expiresAt)
     {
         var session = await _systemContext.Session.FindAsync(sessionId);
+
+        if (session == null)
+        {
+            throw new InvalidOperationException($"Session with ID {sessionId} not found.");
+        }
+
         session.ExpiresAt = expiresAt;
         session.LastRefreshToken = refreshToken.ToSHA256();
 

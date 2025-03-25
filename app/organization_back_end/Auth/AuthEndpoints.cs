@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using organization_back_end.Auth.Model;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Auth;
 using organization_back_end.Services;
 
@@ -16,10 +17,10 @@ public class AuthEndpoints : ControllerBase
     private readonly JwtService _jwtService;
     private readonly SessionService _sessionService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly LicenceService _licenceService;
-    private readonly EmailService _emailService;
+    private readonly ILicenceService _licenceService;
+    private readonly IEmailService _emailService;
 
-    public AuthEndpoints(UserManager<User> userManager, JwtService jwtService, IHttpContextAccessor httpContextAccessor, SessionService sessionService, LicenceService licenceService, EmailService emailService)
+    public AuthEndpoints(UserManager<User> userManager, JwtService jwtService, IHttpContextAccessor httpContextAccessor, SessionService sessionService, ILicenceService licenceService, IEmailService emailService)
     {
         _userManager = userManager;
         _jwtService = jwtService;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using organization_back_end.Helpers;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Licences;
 using organization_back_end.Services;
 
@@ -9,9 +10,9 @@ namespace organization_back_end.Controllers;
 [Route("licences")]
 public class LicenceController : ControllerBase
 {
-    private readonly LicenceService _licenceService;
+    private readonly ILicenceService _licenceService;
 
-    public LicenceController(LicenceService licenceService)
+    public LicenceController(ILicenceService licenceService)
     {
         _licenceService = licenceService;
     }

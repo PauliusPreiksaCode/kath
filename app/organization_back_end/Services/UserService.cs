@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
+using organization_back_end.Interfaces;
 using organization_back_end.ResponseDto.Users;
 
 namespace organization_back_end.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly SystemContext _context;
 

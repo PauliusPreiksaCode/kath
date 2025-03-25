@@ -2,20 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Organization;
 using organization_back_end.ResponseDto.Organizations;
 using organization_back_end.ResponseDto.Users;
 
 namespace organization_back_end.Services;
 
-public class OrganizationService
+public class OrganizationService : IOrganizationService
 {
     private readonly SystemContext _systemContext;
     private readonly UserManager<User> _userManager;
-    private readonly GroupService _groupService;
-    private readonly EmailService _emailService;
+    private readonly IGroupService _groupService;
+    private readonly IEmailService _emailService;
 
-    public OrganizationService(SystemContext systemContext, UserManager<User> userManager, GroupService groupService, EmailService emailService)
+    public OrganizationService(SystemContext systemContext, UserManager<User> userManager, IGroupService groupService, IEmailService emailService)
     {
         _systemContext = systemContext;
         _userManager = userManager;

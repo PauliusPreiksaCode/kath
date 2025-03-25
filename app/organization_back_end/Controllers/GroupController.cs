@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using organization_back_end.Auth.Model;
 using organization_back_end.Helpers;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Group;
 using organization_back_end.Services;
 
@@ -12,11 +13,11 @@ namespace organization_back_end.Controllers;
 public class GroupController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
-    private readonly GroupService _groupService;
-    private readonly LicenceService _licenceService;
-    private readonly OrganizationService _organizationService;
+    private readonly IGroupService _groupService;
+    private readonly ILicenceService _licenceService;
+    private readonly IOrganizationService _organizationService;
 
-    public GroupController(UserManager<User> userManager, GroupService groupService, LicenceService licenceService, OrganizationService organizationService)
+    public GroupController(UserManager<User> userManager, IGroupService groupService, ILicenceService licenceService, IOrganizationService organizationService)
     {
         _userManager = userManager;
         _groupService = groupService;

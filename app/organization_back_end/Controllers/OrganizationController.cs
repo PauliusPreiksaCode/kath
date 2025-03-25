@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.Helpers;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Organization;
 using organization_back_end.Services;
 
@@ -12,13 +13,13 @@ namespace organization_back_end.Controllers;
 [Route("organizations")]
 public class OrganizationController : ControllerBase
 {
-    private readonly OrganizationService _organizationService;
+    private readonly IOrganizationService _organizationService;
     private readonly UserManager<User> _userManager;
-    private readonly LicenceService _licenceService;
+    private readonly ILicenceService _licenceService;
 
 
-    public OrganizationController(OrganizationService organizationService, UserManager<User> userManager,
-        LicenceService licenceService)
+    public OrganizationController(IOrganizationService organizationService, UserManager<User> userManager,
+        ILicenceService licenceService)
     {
         _organizationService = organizationService;
         _userManager = userManager;

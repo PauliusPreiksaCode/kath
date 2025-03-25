@@ -6,20 +6,21 @@ using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.Helpers;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Entry;
 using organization_back_end.ResponseDto.Entries;
 using File = organization_back_end.Entities.File;
 
 namespace organization_back_end.Services;
 
-public class EntryService
+public class EntryService : IEntryService
 {
     private readonly SystemContext _systemContext;
     private readonly UserManager<User> _userManager;
-    private readonly FileService _fileService;
+    private readonly IFileService _fileService;
     private readonly IHubContext<EntriesHub> _hubContext;
     
-    public EntryService(SystemContext systemContext, UserManager<User> userManager, FileService fileService, IHubContext<EntriesHub> hubContext)
+    public EntryService(SystemContext systemContext, UserManager<User> userManager, IFileService fileService, IHubContext<EntriesHub> hubContext)
     {
         _systemContext = systemContext;
         _userManager = userManager;

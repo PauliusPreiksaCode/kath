@@ -2,18 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Group;
 using organization_back_end.ResponseDto.Groups;
 
 namespace organization_back_end.Services;
 
-public class GroupService
+public class GroupService : IGroupService
 {
     private readonly SystemContext _systemContext;
-    private readonly EntryService _entryService;
+    private readonly IEntryService _entryService;
     private readonly UserManager<User> _userManager;
 
-    public GroupService(SystemContext systemContext, EntryService entryService, UserManager<User> userManager)
+    public GroupService(SystemContext systemContext, IEntryService entryService, UserManager<User> userManager)
     {
         _systemContext = systemContext;
         _entryService = entryService;

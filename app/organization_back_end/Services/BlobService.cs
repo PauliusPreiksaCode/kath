@@ -1,9 +1,10 @@
 ﻿using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc;
+using organization_back_end.Interfaces;
 
 namespace organization_back_end.Services;
 
-public class BlobService
+public class BlobService : IBlobService
 {
     private readonly BlobContainerClient _containerClient;
 

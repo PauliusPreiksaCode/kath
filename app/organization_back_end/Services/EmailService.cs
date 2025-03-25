@@ -1,11 +1,12 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
 using organization_back_end.Helpers;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Email;
 
 namespace organization_back_end.Services;
 
-public class EmailService
+public class EmailService : IEmailService
 {
     private readonly IConfiguration _config;
 

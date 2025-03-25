@@ -4,12 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using organization_back_end.Auth.Model;
 using organization_back_end.Entities;
 using organization_back_end.Enums;
+using organization_back_end.Interfaces;
 using organization_back_end.RequestDtos.Licences;
 using Session = Stripe.Checkout.Session;
 
 namespace organization_back_end.Services;
 
-public class LicenceService
+public class LicenceService : ILicenceService
 {
     private readonly SystemContext _context;
     private readonly UserManager<User> _userManager;
@@ -110,7 +111,7 @@ public class LicenceService
         await _context.SaveChangesAsync();
         return ledgerEntry.Id;
     }
-    
+
     public async Task UpdateLicenceLedgerEntry(Guid id, LicencePaymentStatus status, Session session)
     {
         var ledgerEntry = await _context.LicenceLedgerEntries
