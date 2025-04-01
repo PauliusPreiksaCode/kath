@@ -33,10 +33,10 @@ export default function LicenceCard(licence : Licence) {
                 minHeight: '250px'
         }}>
             <CardContent>
-                <Typography sx={textStyle}>{licence.name} Licence</Typography>
+                <Typography sx={textStyle}>{licence.name} License</Typography>
                 <Typography sx={textStyle}>Price: {licence.price} EUR</Typography>
-                <Typography sx={textStyle}>Licence Type: {licenceType[licence.type]}</Typography>
-                <Typography sx={textStyle}>Licence Duration: {licence.duration} days</Typography>
+                <Typography sx={textStyle}>License Type: {licenceType[licence.type]}</Typography>
+                <Typography sx={textStyle}>License Duration: {licence.duration} days</Typography>
             </CardContent>
             <CardActionArea sx={{ textAlign: 'center' }}>
                 <Button
@@ -60,7 +60,7 @@ export default function LicenceCard(licence : Licence) {
                         window.open(result.redirectUrl, '_blank', 'noopener,noreferrer');
                     }}
                 >
-                    Buy licence
+                    Buy license
                 </Button>
             </CardActionArea>
         </Card>

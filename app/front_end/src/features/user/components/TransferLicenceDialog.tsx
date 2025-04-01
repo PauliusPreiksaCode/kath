@@ -65,7 +65,7 @@ export default function TransferLicenceDialog ({ open, onClose, licenceLedger} :
                         fontSize: '1.2rem',
                         }}
                     >
-                        Transfer licence
+                        Transfer license
                     </DialogTitle>
                 </Grid>
                 <Grid item xs={4}>
@@ -112,7 +112,7 @@ export default function TransferLicenceDialog ({ open, onClose, licenceLedger} :
             >
                 <DialogTitle>Confirm Transfer</DialogTitle>
                 <DialogContent>
-                    Are you sure you want to transfer the licence to {selectedUser?.email}?
+                    Are you sure you want to transfer the license to {selectedUser?.email}?
                 </DialogContent>
                 <DialogActions>
                     <Button 

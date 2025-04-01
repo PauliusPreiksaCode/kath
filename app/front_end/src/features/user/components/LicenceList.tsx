@@ -28,7 +28,7 @@ export default function LicenceList({ licenceList }: { licenceList: LicenceLedge
                 color: theme.palette.primary.main,
                 textAlign: 'center',
             }}>
-                User payments and licences
+                User payments and licenses
             </Typography>
             <Grid container spacing={2} sx={{ maxHeight: '25vh', overflowY: 'auto' }}>
                 {licenceList.map((ledgerEntry) => (
@@ -59,7 +59,7 @@ export default function LicenceList({ licenceList }: { licenceList: LicenceLedge
                                 <strong>Payment Status:</strong> {paymentStatus[ledgerEntry.paymentStatus]}
                             </Typography>
                             <Typography sx={{ flex: '1 1 20%' }}>
-                                <strong>Licence Type:</strong> {licenceType[ledgerEntry.licence?.type]}
+                                <strong>License Type:</strong> {licenceType[ledgerEntry.licence?.type]}
                             </Typography>
                             <Button
                                 variant="contained"
@@ -74,7 +74,7 @@ export default function LicenceList({ licenceList }: { licenceList: LicenceLedge
                                         setOpenTransferDialog(true);
                                     }}
                             >
-                                Transfer licence
+                                Transfer license
                             </Button>
                             <Button
                                 variant="contained"
@@ -89,7 +89,7 @@ export default function LicenceList({ licenceList }: { licenceList: LicenceLedge
                                         setOpenDeactivateDialog(true);
                                     }}
                             >
-                                Deactivate licence
+                                Deactivate license
                             </Button>
                         </Box>
                     </Grid>

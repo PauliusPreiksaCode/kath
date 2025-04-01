@@ -19,9 +19,9 @@ export default function RemoveLicenceDialog({ open, onClose, licenceLedger }: Re
                 open={open}
                 onClose={() => onClose()}
             >
-                <DialogTitle>Confirm deactivation of licence</DialogTitle>
+                <DialogTitle>Confirm deactivation of license</DialogTitle>
                 <DialogContent>
-                    Are you sure you want to deactivate the licence?
+                    Are you sure you want to deactivate the license?
                 </DialogContent>
                 <DialogActions>
                     <Button 

@@ -8,9 +8,10 @@ interface DeleteFileCardProps {
     open: boolean;
     onClose: () => void;
     entry: EntryProps;
+    onViewFileClose: () => void;
 }
 
-export default function DeleteFileCard({ open, onClose, entry } : DeleteFileCardProps) {
+export default function DeleteFileCard({ open, onClose, entry, onViewFileClose } : DeleteFileCardProps) {
 
     const Theme = useTheme();
     const organizationContext = useContext(OrganizationContext);
@@ -41,6 +42,7 @@ export default function DeleteFileCard({ open, onClose, entry } : DeleteFileCard
                     variant='contained'
                     onClick={ async () => { 
                         await deleteFile.mutateAsync({ groupId: organizationContext.groupId, entryId: entry.id });
+                        onViewFileClose();
                         onClose(); 
                     }} 
                     sx={{

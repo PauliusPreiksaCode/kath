@@ -137,6 +137,7 @@ export default function ViewFileCard({ open, onClose, entry, fullOwner }: ViewFi
             open={openDeleteFile}
             onClose={() => setOpenDeleteFile(false)}
             entry={entry}
+            onViewFileClose={() => onClose()}
         />
         </>
     );

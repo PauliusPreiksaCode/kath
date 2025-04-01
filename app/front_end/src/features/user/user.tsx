@@ -53,7 +53,7 @@ export default function User() {
                 display: 'flex',
                 justifyContent: 'center',
             }}>
-                Licences
+                Licenses
             </Typography>
             <Grid container spacing={2}>
                 {licences.map((licence: Licence) => (
