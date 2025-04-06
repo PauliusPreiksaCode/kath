@@ -1,0 +1,15 @@
+**/__pycache__
+**/.venv
+**/.env.*
+**/.git
+**/.gitignore
+**/.DS_Store
+**/node_modules
+**/venv
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.Python
+**/Dockerfile
+**/.dockerignore
+**/README.md
