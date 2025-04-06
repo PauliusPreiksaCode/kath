@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -118,6 +119,22 @@ builder.Services.AddCors(options =>
 builder.Services.AddMvc();
 builder.Services.AddControllers();
 builder.Services.AddRazorPages();
+
+var certPath = builder.Configuration["ASPNETCORE_Kestrel__Certificates__Default__Path"];
+var certPassword = builder.Configuration["ASPNETCORE_Kestrel__Certificates__Default__Password"];
+
+if (!string.IsNullOrEmpty(certPath) && !string.IsNullOrEmpty(certPassword))
+{
+    builder.WebHost.ConfigureKestrel(serverOptions =>
+    {
+        serverOptions.ListenAnyIP(8081, listenOptions =>
+        {
+            listenOptions.UseHttps(new X509Certificate2(certPath, certPassword));
+        });
+
+        serverOptions.ListenAnyIP(8080); // HTTP fallback
+    });
+}
 
 var app = builder.Build();
 
