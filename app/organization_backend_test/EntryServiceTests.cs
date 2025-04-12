@@ -83,10 +83,11 @@ namespace organization_back_end.Tests.Services
             var userManagerMock = new Mock<UserManager<User>>(
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             var result = await entryService.GetEntries(groups[0].OrganizationId, groups[0].Id);
@@ -162,6 +163,7 @@ namespace organization_back_end.Tests.Services
 
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var clientsMock = new Mock<IHubClients>();
+            var aiServiceMock = new Mock<IAIService>();
             var clientProxyMock = new Mock<IClientProxy>();
             hubContextMock.Setup(h => h.Clients).Returns(clientsMock.Object);
             clientsMock.Setup(c => c.Group(It.IsAny<string>())).Returns(clientProxyMock.Object);
@@ -170,7 +172,7 @@ namespace organization_back_end.Tests.Services
                 .Returns(Task.CompletedTask);
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             await entryService.CreateEntry(addEntryRequest, licencedUser.Id);
@@ -210,9 +212,10 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -284,6 +287,7 @@ namespace organization_back_end.Tests.Services
 
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var clientsMock = new Mock<IHubClients>();
+            var aiServiceMock = new Mock<IAIService>();
             var clientProxyMock = new Mock<IClientProxy>();
             hubContextMock.Setup(h => h.Clients).Returns(clientsMock.Object);
             clientsMock.Setup(c => c.Group(It.IsAny<string>())).Returns(clientProxyMock.Object);
@@ -292,7 +296,7 @@ namespace organization_back_end.Tests.Services
                 .Returns(Task.CompletedTask);
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             await entryService.UpdateEntry(updateEntryRequest, licencedUser.Id);
@@ -334,9 +338,10 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -396,9 +401,10 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -487,6 +493,7 @@ namespace organization_back_end.Tests.Services
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var clientsMock = new Mock<IHubClients>();
             var clientProxyMock = new Mock<IClientProxy>();
+            var aiServiceMock = new Mock<IAIService>();
 
             hubContextMock.Setup(h => h.Clients).Returns(clientsMock.Object);
             clientsMock.Setup(c => c.Group(It.IsAny<string>())).Returns(clientProxyMock.Object);
@@ -495,7 +502,7 @@ namespace organization_back_end.Tests.Services
                 .Returns(Task.CompletedTask);
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             await entryService.DeleteEntry(entries[0].Id, groups[0].Id, licencedUser.Id);
@@ -529,9 +536,10 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -574,8 +582,9 @@ namespace organization_back_end.Tests.Services
 
             var fileServiceMock = new Mock<IFileService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+            var aiServiceMock = new Mock<IAIService>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -641,6 +650,7 @@ namespace organization_back_end.Tests.Services
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var clientsMock = new Mock<IHubClients>();
             var clientProxyMock = new Mock<IClientProxy>();
+            var aiServiceMock = new Mock<IAIService>();
 
             hubContextMock.Setup(h => h.Clients).Returns(clientsMock.Object);
             clientsMock.Setup(c => c.Group(It.IsAny<string>())).Returns(clientProxyMock.Object);
@@ -649,7 +659,7 @@ namespace organization_back_end.Tests.Services
                 .Returns(Task.CompletedTask);
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             await entryService.DeleteFile(entry.Id, group.Id, licencedUser.Id);
@@ -688,8 +698,9 @@ namespace organization_back_end.Tests.Services
 
             var fileServiceMock = new Mock<IFileService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+            var aiServiceMock = new Mock<IAIService>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -732,8 +743,9 @@ namespace organization_back_end.Tests.Services
 
             var fileServiceMock = new Mock<IFileService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+            var aiServiceMock = new Mock<IAIService>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -789,8 +801,9 @@ namespace organization_back_end.Tests.Services
 
             var fileServiceMock = new Mock<IFileService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+            var aiServiceMock = new Mock<IAIService>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -855,9 +868,10 @@ namespace organization_back_end.Tests.Services
 
             var fileServiceMock = new Mock<IFileService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+            var aiServiceMock = new Mock<IAIService>();
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             var result = await entryService.LinkingEntries(organizationId, entries[0].Id);
@@ -916,10 +930,11 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             var result = await entryService.GetGraphEntities(organizationId);
@@ -988,10 +1003,11 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
 
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             var result = await entryService.GetEntry(entry.Id, organization.Id);
@@ -1029,9 +1045,10 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
             var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
-                hubContextMock.Object);
+                hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
@@ -1080,8 +1097,9 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+            var aiServiceMock = new Mock<IAIService>();
 
-            var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object, hubContextMock.Object);
+            var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object, hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             var result = await entryService.DownloadFile(entry.GroupId, entry.Id);
@@ -1124,14 +1142,214 @@ namespace organization_back_end.Tests.Services
                 Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
             var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+            var aiServiceMock = new Mock<IAIService>();
 
-            var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object, hubContextMock.Object);
+            var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object, hubContextMock.Object, aiServiceMock.Object);
 
             // Act
             // Assert
             await Assert.ThrowsAsync<Exception>(() =>
                 entryService.DownloadFile(Guid.NewGuid(), Guid.NewGuid()));
 
+        }
+
+        [Fact]
+        public async Task AnalyzeWithAi_WithValidData_AIResponse()
+        {
+            // Arrange
+            var organizationId = Guid.NewGuid();
+            var group = new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Group",
+                Description = "Test Description",
+                CreationDate = DateTime.Now,
+                OrganizationId = organizationId,
+            };
+
+            var link = Guid.NewGuid();
+
+            var entry1 = new Entry
+            {
+                Id = Guid.NewGuid(),
+                Name = "Entry 1",
+                GroupId = group.Id,
+                Group = group,
+                LinkedEntries = new List<Guid> { link },
+                Text = "Test Text",
+                LicencedUserId = Guid.NewGuid().ToString()
+            };
+
+            var entry2 = new Entry
+            {
+                Id = link,
+                Name = "EYS gene",
+                GroupId = group.Id,
+                Group = group,
+                Text = "EYS gene is very important",
+                LicencedUserId = Guid.NewGuid().ToString()
+            };
+
+            var entries = new List<Entry> { entry1, entry2 };
+            var groups = new List<Group> { group };
+
+            var context = CreateMockContext(entries, groups, new List<File>());
+
+            var userManagerMock = new Mock<UserManager<User>>(
+                Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+
+            var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
+
+            var aiResponse = new AIHelpers.GeminiResponse
+            {
+                Success = true,
+                Data = "EYS gene is very important"
+            };
+
+            aiServiceMock
+                .Setup(ai => ai.GetResponseAsync(It.IsAny<string>()))
+                .ReturnsAsync(aiResponse);
+
+            var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+
+            var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
+                hubContextMock.Object, aiServiceMock.Object);
+
+            // Act
+            var result = await entryService.AnalyzeWithAi("EYS", group.Id, entry1.Id);
+
+            // Assert
+            Assert.NotNull(result);
+        }
+
+        [Fact]
+        public async Task AnalyzeWithAi_NoText_ErrorResponse()
+        {
+            // Arrange
+            var organizationId = Guid.NewGuid();
+            var group = new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Group",
+                Description = "Test Description",
+                CreationDate = DateTime.Now,
+                OrganizationId = organizationId,
+            };
+
+            var link = Guid.NewGuid();
+
+            var entry1 = new Entry
+            {
+                Id = Guid.NewGuid(),
+                Name = "Entry 1",
+                GroupId = group.Id,
+                Group = group,
+                LinkedEntries = new List<Guid> { link },
+                Text = "Test Text",
+                LicencedUserId = Guid.NewGuid().ToString()
+            };
+
+            var entry2 = new Entry
+            {
+                Id = link,
+                Name = "EYS gene",
+                GroupId = group.Id,
+                Group = group,
+                Text = "EYS gene is very important",
+                LicencedUserId = Guid.NewGuid().ToString()
+            };
+
+            var entries = new List<Entry> { entry1, entry2 };
+            var groups = new List<Group> { group };
+
+            var context = CreateMockContext(entries, groups, new List<File>());
+
+            var userManagerMock = new Mock<UserManager<User>>(
+                Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+
+            var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
+
+            var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+
+            var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
+                hubContextMock.Object, aiServiceMock.Object);
+
+            // Act
+            var result = await entryService.AnalyzeWithAi("", group.Id, entry1.Id);
+
+            var jsonResponse = new[]
+            {
+                new
+                {
+                    title = "No links",
+                    reason = "No text provided"
+                }
+            };
+
+            var serializedResponse = Newtonsoft.Json.JsonConvert.SerializeObject(jsonResponse);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(serializedResponse, result);
+        }
+
+        [Fact]
+        public async Task AnalyzeWithAi_WrongGroupId_ErrorResponse()
+        {
+            // Arrange
+            var organizationId = Guid.NewGuid();
+            var group = new Group
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Group",
+                Description = "Test Description",
+                CreationDate = DateTime.Now,
+                OrganizationId = organizationId,
+            };
+
+            var link = Guid.NewGuid();
+
+            var entry1 = new Entry
+            {
+                Id = Guid.NewGuid(),
+                Name = "Entry 1",
+                GroupId = group.Id,
+                Group = group,
+                LinkedEntries = new List<Guid> { link },
+                Text = "Test Text",
+                LicencedUserId = Guid.NewGuid().ToString()
+            };
+
+            var entry2 = new Entry
+            {
+                Id = link,
+                Name = "EYS gene",
+                GroupId = group.Id,
+                Group = group,
+                Text = "EYS gene is very important",
+                LicencedUserId = Guid.NewGuid().ToString()
+            };
+
+            var entries = new List<Entry> { entry1, entry2 };
+            var groups = new List<Group> { group };
+
+            var context = CreateMockContext(entries, groups, new List<File>());
+
+            var userManagerMock = new Mock<UserManager<User>>(
+                Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+
+            var fileServiceMock = new Mock<IFileService>();
+            var aiServiceMock = new Mock<IAIService>();
+
+            var hubContextMock = new Mock<IHubContext<EntriesHub>>();
+
+            var entryService = new EntryService(context, userManagerMock.Object, fileServiceMock.Object,
+                hubContextMock.Object, aiServiceMock.Object);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => entryService.AnalyzeWithAi("", Guid.NewGuid(), entry1.Id));
         }
 
     }
