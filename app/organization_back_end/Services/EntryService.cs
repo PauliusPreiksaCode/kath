@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -18,14 +19,16 @@ public class EntryService : IEntryService
     private readonly SystemContext _systemContext;
     private readonly UserManager<User> _userManager;
     private readonly IFileService _fileService;
+    private readonly IAIService _aiService;
     private readonly IHubContext<EntriesHub> _hubContext;
     
-    public EntryService(SystemContext systemContext, UserManager<User> userManager, IFileService fileService, IHubContext<EntriesHub> hubContext)
+    public EntryService(SystemContext systemContext, UserManager<User> userManager, IFileService fileService, IHubContext<EntriesHub> hubContext, IAIService aiService)
     {
         _systemContext = systemContext;
         _userManager = userManager;
         _fileService = fileService;
         _hubContext = hubContext;
+        _aiService = aiService;
     }
 
     public async Task<ICollection<EntryResponseDto>> GetEntries(Guid organizationId, Guid groupId)
@@ -393,5 +396,57 @@ public class EntryService : IEntryService
         };
 
         return entryResponse;
+    }
+    
+    public async Task<string> AnalyzeWithAi(string text, Guid groupId, Guid? entryId)
+    {
+        var group = await _systemContext.Groups
+            .FirstOrDefaultAsync(x => x.Id.Equals(groupId));
+        
+        if (group is null)
+        {
+            throw new Exception("Group not found");
+        }
+        
+        if (string.IsNullOrEmpty(text))
+        {
+            var jsonResponse = new[]
+            {
+                new
+                {
+                    title = "No links",
+                    reason = "No text provided"
+                }
+            };
+            
+            return JsonSerializer.Serialize(jsonResponse);
+        }
+        
+        var otherEntries = await _systemContext.Entries
+            .Where(e => e.GroupId.Equals(groupId) && !e.Id.Equals(entryId))
+            .Select(e => new {Title = e.Name, Text = e.Text})
+            .ToListAsync();
+        
+        var otherEntriesText = string.Join("\n", otherEntries.Select(e => $"Title: {e.Title}\nText: {e.Text}"));
+        
+        var prompt = "I will provide you with a text and some other entries (their title and text). " +
+                     "Please analyze given text and given entries and provide me with entries that my entry should be related to (like a link, my entry links to other entries ) " +
+                     "Give me the title of the entry and why should my entry  be linked";
+        
+        var format = "Write only the title of the entry and why should my entry be linked to it. " +
+                     "Do not write anything else. " +
+                     "If you are not sure more than 50% that my entry should not be linked to any other entries, write 'No links'." +
+                     "If no text is provided, write 'No links'." +
+                     "Do not use markdown formatting. " +
+                     "Response needs to be in JSON format: [{\"title\": \"title\", \"reason\":\"reason\"}]";
+        
+        var textToAnalyze = $"Prompt: {prompt}\n\n" +
+                            $"Other entries:{otherEntriesText}\n\n" +
+                            $"My text:{text}\n\n" + 
+                            $"Additional format: {format}";
+        
+        
+        var response = await _aiService.GetResponseAsync(textToAnalyze);
+        return response.Data;
     }
 }

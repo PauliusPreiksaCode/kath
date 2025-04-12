@@ -240,5 +240,29 @@ public class EntryController : ControllerBase
             return StatusCode(400, "Cannot get entry");
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    [Route("suggestEntries")]
+    public async Task<IActionResult> SuggestEntries([FromBody] FindReferencesRequest request)
+    {
+        try
+        {
+            var userId = User.GetUserId();
+
+            if(await _licenceService.HasRole(userId, Roles.OrganizationOwner) ||
+               await _licenceService.HasRole(userId, Roles.LicencedUser))
+            {
+                var response = await _entryService.AnalyzeWithAi(request.Text, request.GroupId, request.EntryId);
+                return Ok(response);
+            }
+
+            return StatusCode(StatusCodes.Status403Forbidden, "User does not have a licence");
+        }
+        catch (Exception e)
+        {
+            return StatusCode(400, "Cannot get AI recommendations");
+        }
+    }
     
 }

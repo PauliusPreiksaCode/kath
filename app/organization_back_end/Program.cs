@@ -98,6 +98,8 @@ builder.Services.AddTransient<JwtService>();
 builder.Services.AddTransient<SessionService>();
 builder.Services.AddScoped<IBlobService, BlobService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddHttpClient<IAIService, GeminiAIService>();
+builder.Services.AddScoped<IAIService, GeminiAIService>();
 builder.Services.AddSignalR();
 builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<ILicenceService, LicenceService>();

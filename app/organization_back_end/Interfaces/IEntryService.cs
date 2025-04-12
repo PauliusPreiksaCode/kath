@@ -15,4 +15,5 @@ public interface IEntryService
     Task<IEnumerable<LinkingEntryResponseDto>> LinkingEntries(Guid organizationId, Guid? entryToExclude);
     Task<IEnumerable<GraphEntitiesResponse>> GetGraphEntities(Guid organizationId);
     Task<EntryViewResponseDto> GetEntry(Guid entryId, Guid organizationId);
+    Task<string> AnalyzeWithAi(string text, Guid groupId, Guid? entryId);
 }
