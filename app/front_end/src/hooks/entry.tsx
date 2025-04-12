@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toastService from '@/services/toast';
-import { createEntry, deleteEntry, deleteFile, downloadFile, getEntries, updateEntry, getLinkingEntries, getGraphEntries, getEntry } from '@/services/api';
+import { createEntry, deleteEntry, deleteFile, downloadFile, getEntries, updateEntry, getLinkingEntries, getGraphEntries, getEntry, suggestLinkEntries } from '@/services/api';
 
 
 export const useGetEntries = (organizationId : string, groupId : string) => {
@@ -107,3 +107,10 @@ export const useDeleteFile = (organizationId : string) => {
         },
     });
 }
+
+export const useSuggestLinkEntries = () => {
+    return useMutation({
+        mutationFn: suggestLinkEntries,
+        onSuccess: () => {},
+    });
+};

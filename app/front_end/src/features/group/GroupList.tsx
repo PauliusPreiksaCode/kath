@@ -33,7 +33,11 @@ export default function Group() {
     }, [getGroups.data]);
 
     if(getGroups.isLoading || getGroups.isFetching) {
-        return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     return (

@@ -4,7 +4,7 @@ import { useUpdateEntry, useGetLinkingEntries } from '@/hooks/entry';
 import { useContext, useState, useEffect, forwardRef } from 'react';
 import { OrganizationContext } from '@/services/organizationProvider';
 import { Formik, Form } from 'formik';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon, AutoAwesome as AIIcon } from '@mui/icons-material';
 import { EntryTemplateValidation } from "@/validation/entryTemplate";
 import FileInput from "./FileInput";
 import { fileService } from "@/services/fileService";
@@ -14,6 +14,7 @@ import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github.css';
 import { CodeProps, MarkdownHelperText } from './CreateEntryCard';
 import ViewEntryCard from './ViewEntryCard';
+import SuggestionCard from './SuggestionCard';
 
 interface UpdateEntryCardProps {
     open: boolean;
@@ -33,6 +34,7 @@ export default function UpdateEntryCard({ open, onClose, entry }: UpdateEntryCar
     const [tabValue, setTabValue] = useState(0);
     const [selectedEntryId, setSelectedEntry] = useState<string>('');
     const [openEntry, setOpenEntry] = useState<boolean>(false);
+    const [openSuggestions, setOpenSuggestions] = useState<boolean>(false);
     
     const linking = useEntryLinking();
 
@@ -51,7 +53,11 @@ export default function UpdateEntryCard({ open, onClose, entry }: UpdateEntryCar
     }, [open]);
 
     if(linkingEntries.isLoading && !linkingEntries.isFetching) {
-        return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     const initialValues = {
@@ -269,6 +275,20 @@ export default function UpdateEntryCard({ open, onClose, entry }: UpdateEntryCar
                                                 )}
                                         </Paper>
                                     )}
+                                    <Button 
+                                        variant="contained" 
+                                        onClick={() => setOpenSuggestions(true)} 
+                                        sx={{ 
+                                            color: Theme.palette.primary.contrastText,
+                                            backgroundColor: Theme.palette.primary.main,
+                                            fontWeight: 'bold',
+                                            fontSize: '1rem',
+                                            mt: '0.5rem',
+                                            ml: '0.5rem',
+                                        }}
+                                    >
+                                        <span>Suggest related links with AI</span><AIIcon sx={{ ml: 1 }} />
+                                    </Button>
                                     {linking.showAutoComplete && (
                                         <Box
                                             sx={{
@@ -368,6 +388,14 @@ export default function UpdateEntryCard({ open, onClose, entry }: UpdateEntryCar
                                     Update
                                 </Button>
                             </DialogActions>
+                            {openSuggestions && (
+                                <SuggestionCard
+                                    open={openSuggestions}
+                                    onClose={() => setOpenSuggestions(false)}
+                                    text={values.text}
+                                    entryId={entry.id}
+                                />
+                            )}
                         </Form>
                     )}
                 </Formik>

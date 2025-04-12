@@ -403,6 +403,13 @@ export async function deleteFile(groupId : string, entryId : string) {
       });
 }
 
-
-
-
+export async function suggestLinkEntries(request : any) {
+  return await instance
+    .post(Endpoints.SUGGEST_LINKING_ENTRIES, request)
+    .then((res) => res.data)
+    .catch((e) => {
+      if(e !== undefined) {
+        toastService.error(e.response.data);
+      }
+    });
+}

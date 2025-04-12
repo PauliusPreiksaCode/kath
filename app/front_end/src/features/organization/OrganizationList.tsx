@@ -28,7 +28,11 @@ export default function Organization() {
     }, [getOrganizations.data])
 
     if(getOrganizations.isLoading || getOrganizations.isFetching) {
-        return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     return (

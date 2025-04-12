@@ -28,7 +28,11 @@ export default function Graph() {
     }, [getGraphEntries.data]);
 
     if(getGraphEntries.isLoading && !getGraphEntries.isFetching) {
-        return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     const graphData = useMemo(() => {

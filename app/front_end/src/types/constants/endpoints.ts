@@ -77,4 +77,5 @@ export const Endpoints = {
   DELETE_FILE: `/entries/delete-file`,
   LINKING_ENTRIES: `/entries/linkingEntries`,
   GRAPH_ENTRIES: `/entries/graphEntries`,
+  SUGGEST_LINKING_ENTRIES: `/entries/suggestEntries`,
 };

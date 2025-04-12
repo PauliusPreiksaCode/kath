@@ -24,7 +24,11 @@ export default function TransferLicenceDialog ({ open, onClose, licenceLedger} :
     }, [getUsers.data]);
 
     if(getUsers.isLoading || getUsers.isFetching) {
-        return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     const handleUserSelect = (_: any, newValue: any) => {

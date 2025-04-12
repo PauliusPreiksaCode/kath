@@ -25,7 +25,11 @@ export default function RemoveMemberCard({ open, onClose, organization } : Remov
     }, [getOrganizationUsers.data]);
 
     if(getOrganizationUsers.isLoading || getOrganizationUsers.isFetching) {
-        return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     const handleUserSelect = (_: any, newValue: any) => {

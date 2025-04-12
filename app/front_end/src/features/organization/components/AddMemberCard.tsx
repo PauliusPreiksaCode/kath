@@ -24,7 +24,11 @@ export default function AddMemberCard({ open, onClose, organization } : AddMembe
     }, [getNonOrganizationUsers.data]);
 
     if(getNonOrganizationUsers.isLoading || getNonOrganizationUsers.isFetching) {
-        return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     const handleUserSelect = (_: any, newValue: any) => {

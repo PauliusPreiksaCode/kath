@@ -8,7 +8,6 @@ export default function Register() {
     const register = useRegister();
     const Theme = useTheme();
 
-  
     const initialValues = {
       password: '',
       email: '',
@@ -31,7 +30,7 @@ export default function Register() {
         <Formik
           initialValues={initialValues}
           onSubmit={async (values) => {
-            register.mutateAsync(values);
+            await register.mutateAsync(values);
           }}
           validationSchema={registerTemplate}
         >

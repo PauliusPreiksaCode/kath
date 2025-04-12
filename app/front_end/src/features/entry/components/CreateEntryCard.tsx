@@ -1,6 +1,6 @@
 import { useCreateEntry, useGetLinkingEntries } from "@/hooks/entry";
 import { alpha, Box, Dialog, DialogContent, DialogActions, Button, DialogTitle, TextField, Grid, Tabs, Tab, Paper, IconButton, useTheme, Autocomplete, Chip, Typography, CircularProgress } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon, AutoAwesome as AIIcon } from '@mui/icons-material';
 import { Formik, Form } from 'formik';
 import { forwardRef, useContext, useEffect, useState } from 'react';
 import { OrganizationContext } from '@/services/organizationProvider';
@@ -12,6 +12,7 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github.css';
 import ViewEntryCard from "./ViewEntryCard";
+import SuggestionCard from "./SuggestionCard";
 
 export const MarkdownHelperText = () => {
     const Theme = useTheme();
@@ -61,6 +62,7 @@ export default function CreateEntryCard({ open, onClose }: CreateGroupCardProps)
     const [tabValue, setTabValue] = useState(0);
     const [selectedEntryId, setSelectedEntry] = useState<string>('');
     const [openEntry, setOpenEntry] = useState<boolean>(false);
+    const [openSuggestions, setOpenSuggestions] = useState<boolean>(false);
 
     const linking = useEntryLinking();
 
@@ -78,7 +80,11 @@ export default function CreateEntryCard({ open, onClose }: CreateGroupCardProps)
     }, [linkingEntries.data]);
 
     if(linkingEntries.isLoading && !linkingEntries.isFetching) {
-            return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     const initialValues = {
@@ -353,6 +359,20 @@ export default function CreateEntryCard({ open, onClose }: CreateGroupCardProps)
                                         </Box>
                                     )}
                                     </Grid>
+                                    <Button 
+                                        variant="contained" 
+                                        onClick={() => setOpenSuggestions(true)} 
+                                        sx={{ 
+                                            color: Theme.palette.primary.contrastText,
+                                            backgroundColor: Theme.palette.primary.main,
+                                            fontWeight: 'bold',
+                                            fontSize: '1rem',
+                                            mt: '0.5rem',
+                                            ml: '0.5rem',
+                                        }}
+                                    >
+                                        <span>Suggest related links with AI</span><AIIcon sx={{ ml: 1 }} />
+                                    </Button>
                                     {linking.linkedEntries.length > 0 && (
                                         <Grid item xs={12}>
                                         <Box mt={2}>
@@ -400,6 +420,13 @@ export default function CreateEntryCard({ open, onClose }: CreateGroupCardProps)
                                     Create
                                 </Button>
                             </DialogActions>
+                            {openSuggestions && (
+                                <SuggestionCard
+                                    open={openSuggestions}
+                                    onClose={() => setOpenSuggestions(false)}
+                                    text={values.text}
+                                />
+                            )}
                         </Form>
                     )}
 

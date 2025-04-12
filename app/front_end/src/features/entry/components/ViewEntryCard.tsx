@@ -55,7 +55,11 @@ export default function ViewEntryCard({open, onClose, entryId} : ViewEntryCardPr
     }, [getEntry.data]);
 
     if((getEntry.isLoading && !getEntry.isFetching)) {
-            return <CircularProgress/>;
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+              <CircularProgress />
+            </Box>
+        );
     }
 
     const hasFile = entry?.fileId !== null;
@@ -136,7 +140,7 @@ export default function ViewEntryCard({open, onClose, entryId} : ViewEntryCardPr
                 <CardContent>
                     <Grid container spacing={2}>
                         <Grid item xs={10} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', maxHeight: '5vh', borderBottom: '3px solid black',  width: '100%' }}>
+                            <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', maxHeight: '10vh', borderBottom: '3px solid black',  width: '100%' }}>
                                 <Typography sx={textStyle}>{entry?.fullName}</Typography>
                                 <Typography sx={textStyle}>{entry?.name}</Typography>
                                 <Typography sx={textStyle}>{entry?.modifyDate.split('T')[0]}</Typography>
