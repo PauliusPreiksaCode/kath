@@ -314,7 +314,7 @@ export default function CreateEntryCard({ open, onClose }: CreateGroupCardProps)
                                                 top: `${linking.autoCompletePosition.top}px`,
                                                 left: `${linking.autoCompletePosition.left}px`,
                                                 width: 'auto',
-                                                minWidth: '12rem',
+                                                minWidth: '18rem',
                                                 backgroundColor: Theme.palette.background.paper,
                                                 borderRadius: '0.5rem',
                                                 height: '10rem',

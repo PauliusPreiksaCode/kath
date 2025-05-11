@@ -376,9 +376,10 @@ export async function downloadFile(groupId : string, entryId : string) {
       const blob = new Blob([res.data], { type: res.headers['content-type'] });
       const url = window.URL.createObjectURL(blob);
       const filename = fileService.getFileNameFromHeaders(res.headers) || "downloaded-file";
+      const sanitizedFilename = filename.replace(/\"/g, '');
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', filename);
+      link.setAttribute('download', sanitizedFilename);
       document.body.appendChild(link);
       link.click();
 

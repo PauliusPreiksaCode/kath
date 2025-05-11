@@ -32,6 +32,8 @@ public class LicenceService : ILicenceService
             ledgerEntry.IsActive = false;
             await _context.SaveChangesAsync();
         }
+        
+        await UpdateUserRoles(userId);
     }
     
     public async Task TransferLicence(string userId, string newUserId, Guid ledgerEntryId)

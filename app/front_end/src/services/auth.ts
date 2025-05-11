@@ -1,10 +1,11 @@
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { ORGANIZATION_API_URL } from '@/types';
 
 async function renewToken () {
     try {
       const result = await axios.post(
-        'https://localhost:7059/auth/accessToken',
+        `${ORGANIZATION_API_URL}/auth/accessToken`,
         {},
         { withCredentials: true }
       );

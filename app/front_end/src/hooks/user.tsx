@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { register, getAvailableLicences, buyLicence, updatePayment, getUserLicences, getUsers, transferLicence, removeLicence } from '@/services/api';
 import { useNavigate } from 'react-router';
 import toastService from '@/services/toast';
+import authService from '@/services/auth';
 
 
 export const useRegister = () => {
@@ -44,6 +45,7 @@ export const useUpdatePayment = () => {
       if (e !== undefined) 
         toastService.success("Payment updated successfully");
       queryClient.invalidateQueries({ queryKey: ['userLicences'] });
+      authService.renewToken();
     },
   });
 }
@@ -75,6 +77,7 @@ export const useTransferLicence = () => {
       if (e !== undefined)
         toastService.success("Licence transferred successfully");
       queryClient.invalidateQueries({ queryKey: ['userLicences'] });
+      authService.renewToken();
     },
   });
 }
@@ -88,6 +91,7 @@ export const useRemoveLicence = () => {
       if (e !== undefined)
         toastService.success("Licence removed successfully");
       queryClient.invalidateQueries({ queryKey: ['userLicences'] });
+      authService.renewToken();
     },
   });
 }
